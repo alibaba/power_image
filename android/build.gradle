@@ -1,0 +1,44 @@
+group 'com.taobao.power_image'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 29
+
+    defaultConfig {
+        minSdkVersion 16
+//        externalNativeBuild {
+//            cmake {
+//                cppFlags '-std=c++14'
+//            }
+//        }
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+//    externalNativeBuild {
+//        cmake {
+//            path file('src/main/cpp/CMakeLists.txt')
+//            version '3.10.2'
+//        }
+//    }
+}
