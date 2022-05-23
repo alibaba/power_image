@@ -3,11 +3,11 @@ import 'package:power_image/src/options/power_image_request_options_src.dart';
 
 class PowerImageRequest {
   PowerImageRequest.create(PowerImageRequestOptions options)
-      : this.imageWidth = options.imageWidth,
-        this.imageHeight = options.imageHeight,
-        this.imageType = options.imageType,
-        this.renderingType = options.renderingType,
-        this.src = options.src;
+      : imageWidth = options.imageWidth,
+        imageHeight = options.imageHeight,
+        imageType = options.imageType,
+        renderingType = options.renderingType,
+        src = options.src;
 
   /// need use string params to native, avoid setting object in map,
   /// so this is not <String, dynamic>

@@ -7,7 +7,7 @@ import 'package:power_image/power_image.dart';
 import 'power_image_channel.dart';
 import 'power_image_request.dart';
 
-typedef void EventHandler(Map<dynamic, dynamic> event);
+typedef EventHandler = void Function(Map<dynamic, dynamic> event);
 
 class PowerImagePlatformChannel extends PowerImageChannelImpl {
 
@@ -25,9 +25,7 @@ class PowerImagePlatformChannel extends PowerImageChannelImpl {
   }
 
   StreamSubscription? startListening() {
-    if (_subscription == null) {
-      _subscription = eventChannel.receiveBroadcastStream().listen(onEvent);
-    }
+    _subscription ??= eventChannel.receiveBroadcastStream().listen(onEvent);
     return _subscription;
   }
 
@@ -60,11 +58,13 @@ class PowerImagePlatformChannel extends PowerImageChannelImpl {
   @visibleForTesting
   EventChannel eventChannel = const EventChannel('power_image/event');
 
+  @override
   void startImageRequests(List<PowerImageRequest> requests) async {
     await methodChannel.invokeListMethod(
         'startImageRequests', encodeRequests(requests));
   }
 
+  @override
   void releaseImageRequests(List<PowerImageRequest> requests) async {
     await methodChannel.invokeListMethod(
         'releaseImageRequests', encodeRequests(requests));

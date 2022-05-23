@@ -4,7 +4,8 @@ import 'package:power_image/src/external/power_external_image_provider.dart';
 import 'package:power_image_ext/image_ext.dart';
 
 class PowerExternalImage extends StatefulWidget {
-  PowerExternalImage({
+  const PowerExternalImage({
+    Key? key,
     required this.provider,
     this.frameBuilder,
     this.errorBuilder,
@@ -14,7 +15,7 @@ class PowerExternalImage extends StatefulWidget {
     this.alignment = Alignment.center,
     this.semanticLabel,
     this.excludeFromSemantics = false,
-  });
+  }):super(key: key);
 
   final PowerExternalImageProvider provider;
   final ImageFrameBuilder? frameBuilder;

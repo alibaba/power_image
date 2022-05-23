@@ -57,7 +57,7 @@ abstract class PowerImageProvider extends ImageProviderExt<PowerImageProvider> {
       bool? isMultiFrame = map['_multiFrame'];
       if (isMultiFrame == true) {
         _completer!
-          ..addOnLastListenerRemovedCallback(() {
+          .addOnLastListenerRemovedCallback(() {
             scheduleMicrotask(() {
               PaintingBinding.instance!.imageCache!.evict(key);
             });

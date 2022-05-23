@@ -26,13 +26,13 @@ class _ExampleGalleryPrevState extends State<ExampleGalleryPrev> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text('preview'),
+        title: const Text('preview'),
       ),
       body: Stack(
         children: [
           Container(
               alignment: Alignment.center,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -51,7 +51,7 @@ class _ExampleGalleryPrevState extends State<ExampleGalleryPrev> {
           Positioned(
             child: Text(
               path,
-              style: TextStyle(fontSize: 12),
+              style: const TextStyle(fontSize: 12),
               softWrap: true,
             ),
             left: 0,

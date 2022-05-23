@@ -83,6 +83,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_lints:
+    dependency: "direct dev"
+    description:
+      name: flutter_lints
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -156,6 +163,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.3"
+  lints:
+    dependency: transitive
+    description:
+      name: lints
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   matcher:
     dependency: transitive
     description:
@@ -236,11 +250,9 @@ packages:
   power_image_ext:
     dependency: transitive
     description:
-      path: "."
-      ref: master
-      resolved-ref: "90c60d1e96e609e93b78b9fd0070e839441c38c6"
-      url: "git@gitlab.alibaba-inc.com:flutter-explorer/power_image_ext.git"
-    source: git
+      path: "../../power_image_ext"
+      relative: true
+    source: path
     version: "0.0.1"
   process:
     dependency: transitive

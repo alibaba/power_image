@@ -1,8 +1,5 @@
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:power_image/power_image.dart';
-import 'package:power_image/src/common/power_Image_platform_channel.dart';
-import 'package:power_image/src/common/power_image_request.dart';
 
 void main() {
   //test initialize
@@ -12,53 +9,53 @@ void main() {
     setUp(() {});
 
     test('constructors', () {
-      PowerImageRequestOptions options_network = PowerImageRequestOptions.network(
+      PowerImageRequestOptions optionsNetwork = PowerImageRequestOptions.network(
           'network',
           renderingType: renderingTypeExternal,
           imageWidth: 100,
           imageHeight: 101);
-      expect(options_network.src == PowerImageRequestOptionsSrcNormal(src: 'network'),
+      expect(optionsNetwork.src == PowerImageRequestOptionsSrcNormal(src: 'network'),
           true);
-      expect(options_network.imageWidth == 100, true);
-      expect(options_network.imageHeight == 101, true);
-      expect(options_network.renderingType == renderingTypeExternal, true);
-      expect(options_network.imageType == imageTypeNetwork, true);
+      expect(optionsNetwork.imageWidth == 100, true);
+      expect(optionsNetwork.imageHeight == 101, true);
+      expect(optionsNetwork.renderingType == renderingTypeExternal, true);
+      expect(optionsNetwork.imageType == imageTypeNetwork, true);
 
-      PowerImageRequestOptions options_nativeAsset = PowerImageRequestOptions.nativeAsset(
+      PowerImageRequestOptions optionsNativeAsset = PowerImageRequestOptions.nativeAsset(
           'nativeAsset',
           renderingType: renderingTypeTexture,
           imageWidth: 100,
           imageHeight: 101);
-      expect(options_nativeAsset.src == PowerImageRequestOptionsSrcNormal(src: 'nativeAsset'),
+      expect(optionsNativeAsset.src == PowerImageRequestOptionsSrcNormal(src: 'nativeAsset'),
           true);
-      expect(options_nativeAsset.imageWidth == 100, true);
-      expect(options_nativeAsset.imageHeight == 101, true);
-      expect(options_nativeAsset.renderingType == renderingTypeTexture, true);
-      expect(options_nativeAsset.imageType == imageTypeNativeAssert, true);
+      expect(optionsNativeAsset.imageWidth == 100, true);
+      expect(optionsNativeAsset.imageHeight == 101, true);
+      expect(optionsNativeAsset.renderingType == renderingTypeTexture, true);
+      expect(optionsNativeAsset.imageType == imageTypeNativeAssert, true);
 
-      PowerImageRequestOptions options_asset = PowerImageRequestOptions.asset(
+      PowerImageRequestOptions optionsAsset = PowerImageRequestOptions.asset(
           'asset', package: 'package',
           renderingType: renderingTypeTexture,
           imageWidth: 100,
           imageHeight: 101);
-      expect(options_asset.src == PowerImageRequestOptionsSrcAsset(src: 'asset', package: 'package'),
+      expect(optionsAsset.src == PowerImageRequestOptionsSrcAsset(src: 'asset', package: 'package'),
           true);
-      expect(options_asset.imageWidth == 100, true);
-      expect(options_asset.imageHeight == 101, true);
-      expect(options_asset.renderingType == renderingTypeTexture, true);
-      expect(options_asset.imageType == imageTypeAssert, true);
+      expect(optionsAsset.imageWidth == 100, true);
+      expect(optionsAsset.imageHeight == 101, true);
+      expect(optionsAsset.renderingType == renderingTypeTexture, true);
+      expect(optionsAsset.imageType == imageTypeAssert, true);
 
-      PowerImageRequestOptions options_file = PowerImageRequestOptions.file(
+      PowerImageRequestOptions optionsFile = PowerImageRequestOptions.file(
           'file',
           renderingType: renderingTypeTexture,
           imageWidth: 100,
           imageHeight: 101);
-      expect(options_file.src == PowerImageRequestOptionsSrcNormal(src: 'file'),
+      expect(optionsFile.src == PowerImageRequestOptionsSrcNormal(src: 'file'),
           true);
-      expect(options_file.imageWidth == 100, true);
-      expect(options_file.imageHeight == 101, true);
-      expect(options_file.renderingType == renderingTypeTexture, true);
-      expect(options_file.imageType == imageTypeFile, true);
+      expect(optionsFile.imageWidth == 100, true);
+      expect(optionsFile.imageHeight == 101, true);
+      expect(optionsFile.renderingType == renderingTypeTexture, true);
+      expect(optionsFile.imageType == imageTypeFile, true);
     });
 
     test('equal_hashCode', () {

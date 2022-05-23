@@ -16,7 +16,7 @@ class _ImageCacheStatusWidgetState extends State<ImageCacheStatusWidget> {
   }
 
   void _needUpdate() {
-    Future.delayed(Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 100), () {
       setState(() {});
       _needUpdate();
     });
@@ -35,13 +35,13 @@ class _ImageCacheStatusWidgetState extends State<ImageCacheStatusWidget> {
     }
 
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       color: Colors.blueGrey,
       child: Column(
         children: [
           RichText(
               textAlign: TextAlign.center,
-              text: TextSpan(style: TextStyle(fontSize: 12), children: [
+              text: TextSpan(style: const TextStyle(fontSize: 12), children: [
                 TextSpan(text: '_cache.length: ${imageCache!.currentSize}\n'),
                 TextSpan(text: 'sizeBytes: $sizeStr\n'),
                 TextSpan(
@@ -51,7 +51,7 @@ class _ImageCacheStatusWidgetState extends State<ImageCacheStatusWidget> {
               ])),
           GestureDetector(
             onTap: () => imageCache!.clear(),
-            child: Icon(
+            child: const Icon(
               Icons.delete,
               color: Colors.white,
             ),

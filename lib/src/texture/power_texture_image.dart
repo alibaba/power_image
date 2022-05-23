@@ -5,7 +5,8 @@ import 'package:power_image_ext/image_info_ext.dart';
 import 'power_texture_image_provider.dart';
 
 class PowerTextureImage extends StatefulWidget {
-  PowerTextureImage({
+  const PowerTextureImage({
+    Key? key,
     required this.provider,
     this.frameBuilder,
     this.errorBuilder,
@@ -15,7 +16,7 @@ class PowerTextureImage extends StatefulWidget {
     this.alignment = Alignment.center,
     this.semanticLabel,
     this.excludeFromSemantics = false,
-  });
+  }):super(key: key);
 
   final PowerTextureImageProvider provider;
   final ImageFrameBuilder? frameBuilder;
@@ -63,8 +64,8 @@ class PowerTextureState extends State<PowerTextureImage> {
   }
 
   Widget buildImage(BuildContext context, ImageInfo? imageInfo) {
-    if (imageInfo == null || !(imageInfo is PowerTextureImageInfo)) {
-      return Container(
+    if (imageInfo == null || imageInfo is! PowerTextureImageInfo) {
+      return SizedBox(
         width: widget.width,
         height: widget.height,
       );
@@ -72,10 +73,10 @@ class PowerTextureState extends State<PowerTextureImage> {
 
     PowerTextureImageInfo textureImageInfo = imageInfo;
     return ClipRect(
-      child: Container(
+      child: SizedBox(
         child: FittedBox(
           fit: widget.fit ?? BoxFit.contain,
-          child: Container(
+          child: SizedBox(
             width: textureImageInfo.width?.toDouble() ?? widget.width,
             height: textureImageInfo.height?.toDouble() ?? widget.height,
             child: Texture(

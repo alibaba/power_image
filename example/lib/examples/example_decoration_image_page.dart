@@ -17,13 +17,13 @@ class _ExampleDecorationImagePageState
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text('DecorationImageExample'),
+        title: const Text('DecorationImageExample'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 color: Colors.indigo,
                 image: DecorationImage(
                     image: NetworkImage(
@@ -31,7 +31,7 @@ class _ExampleDecorationImagePageState
             width: 100,
             height: 100,
             alignment: Alignment.center,
-            child: Text(
+            child: const Text(
               'DecorationImage',
               style:
                   TextStyle(color: Colors.white, backgroundColor: Colors.red),
@@ -53,7 +53,7 @@ class _ExampleDecorationImagePageState
             width: 100,
             height: 100,
             alignment: Alignment.center,
-            child: Text(
+            child: const Text(
               'PowerDecorationImage',
               style:
                   TextStyle(color: Colors.white, backgroundColor: Colors.red),

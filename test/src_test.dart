@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:power_image/power_image.dart';
-import 'package:power_image_ext/image_info_ext.dart';
 
 void main() {
   //test initialize

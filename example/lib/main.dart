@@ -9,27 +9,27 @@ import 'examples/example_page.dart';
 import 'package:power_image/power_image.dart';
 import 'examples/example_prefetch_page.dart';
 import 'examples/image_cache_status.dart';
-import 'file/file_tool.dart';
 
 void main() {
   runZonedGuarded(() async {
-    print('PowerImageDemo_start');
 
     FlutterError.onError = (FlutterErrorDetails details) {
-      print('PowerImageDemo_FlutterError.onError' + details.toString());
+
     };
 
     PowerImageBinding();
     PowerImageLoader.instance.setup(PowerImageSetupOptions(renderingTypeTexture,
         errorCallbackSamplingRate: null,
         errorCallback: (PowerImageLoadException exception) {}));
-    runApp(MyApp());
+    runApp(const MyApp());
   }, (error, stackTrace) async {
-    print('PowerImageDemo_runZonedGuarded.onError' + error.toString());
+
   });
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -47,12 +47,14 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -63,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       DragOverlay.show(
           context: context,
-          view: ImageCacheStatusWidget());
+          view: const ImageCacheStatusWidget());
     });
     super.initState();
   }
@@ -76,39 +78,39 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: ListView(children: <Widget>[
         ListTile(
-          title: Text('prefech_image'),
+          title: const Text('prefetch_image'),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return ExamplePrefetchPage();
+              return const ExamplePrefetchPage();
             }));
           },
         ),
         ListTile(
-          title: Text('external_image'),
+          title: const Text('external_image'),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return ExamplePage(renderingTypeExternal);
+              return const ExamplePage(renderingTypeExternal);
             }));
           },
         ),
         ListTile(
-          title: Text('texture_image'),
+          title: const Text('texture_image'),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return ExamplePage(renderingTypeTexture);
+              return const ExamplePage(renderingTypeTexture);
             }));
           },
         ),
         ListTile(
-          title: Text('decoration_image'),
+          title: const Text('decoration_image'),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return ExampleDecorationImagePage();
+              return const ExampleDecorationImagePage();
             }));
           },
         ),
         ListTile(
-          title: Text('gallery'),
+          title: const Text('gallery'),
           onTap: () async {
             ImagePicker picker = ImagePicker();
             var image = await picker.pickImage(source: ImageSource.gallery);

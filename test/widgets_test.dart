@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
@@ -12,7 +11,6 @@ import 'package:power_image/src/external/power_external_image.dart';
 import 'package:power_image/src/external/power_external_image_provider.dart';
 import 'package:power_image/src/texture/power_texture_image.dart';
 import 'package:power_image/src/texture/power_texture_image_provider.dart';
-import 'package:power_image_ext/image_cache_ext.dart';
 import 'package:power_image_ext/image_ext.dart';
 import 'package:power_image_ext/image_info_ext.dart';
 
@@ -99,7 +97,7 @@ void main() {
 
       await sendComplete(platformChannel!, mockCompleteMap);
 
-      expect(PowerImageLoader.completers.length == 0, true);
+      expect(PowerImageLoader.completers.isEmpty, true);
 
       await tester.idle();
       await tester.pump(null, EnginePhase.layout);
@@ -142,7 +140,7 @@ void main() {
 
       await sendComplete(platformChannel!, mockCompleteMap);
 
-      expect(PowerImageLoader.completers.length == 0, true);
+      expect(PowerImageLoader.completers.isEmpty, true);
 
       await tester.idle();
       await tester.pump(null, EnginePhase.layout);

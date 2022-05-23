@@ -1,6 +1,6 @@
 name: power_image
 description: A new flutter plugin project.
-version: 0.0.5
+version: 0.1.0
 homepage: https://yuque.antfin-inc.com/docs/share/a53b4f64-949a-4cba-97e9-268533e2caf7?#
 
 environment:
@@ -19,6 +19,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_lints: ^1.0.4
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

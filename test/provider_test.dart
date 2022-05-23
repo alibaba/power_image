@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
-import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -215,9 +213,9 @@ void main() {
           textureProvider1.load(textureProvider1, null);
       expect(completer.runtimeType == OneFrameImageStreamCompleter, true);
 
-      final int textureId = 233;
-      final int width = 1;
-      final int height = 2;
+      const int textureId = 233;
+      const int width = 1;
+      const int height = 2;
       completer.addListener(
           ImageStreamListener((ImageInfo image, bool synchronousCall) {
             expect(image.runtimeType == PowerTextureImageInfo, true);
@@ -264,9 +262,9 @@ void main() {
       // final ImageStreamCompleter completer =
       // textureProvider1.load(textureProvider1, null);
       expect(completer.runtimeType == OneFrameImageStreamCompleter, true);
-      final int textureId = 233;
-      final int width = 1;
-      final int height = 2;
+      const int textureId = 233;
+      const int width = 1;
+      const int height = 2;
 
       ImageStreamListener listener = ImageStreamListener((ImageInfo image, bool synchronousCall) {
         expect(image.runtimeType == PowerTextureImageInfo, true);

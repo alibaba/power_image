@@ -47,7 +47,7 @@ class _ExamplePrefetchPageState extends State<ExamplePrefetchPage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text('prefetch_demo'),
+        title: const Text('prefetch_demo'),
       ),
       body: ListView(
         children: <Widget>[

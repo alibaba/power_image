@@ -55,11 +55,25 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_lints:
+    dependency: "direct dev"
+    description:
+      name: flutter_lints
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   flutter_test:
     dependency: "direct dev"
     description: flutter
     source: sdk
     version: "0.0.0"
+  lints:
+    dependency: transitive
+    description:
+      name: lints
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   matcher:
     dependency: transitive
     description:
@@ -84,11 +98,9 @@ packages:
   power_image_ext:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "feature/null_safety_0.0.2-flutter_2.5.3"
-      resolved-ref: ed7802c522b0829872fc994370c8655985e37a8d
-      url: "git@gitlab.alibaba-inc.com:flutter-explorer/power_image_ext.git"
-    source: git
+      path: "../power_image_ext"
+      relative: true
+    source: path
     version: "0.0.1"
   sky_engine:
     dependency: transitive

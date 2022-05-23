@@ -33,8 +33,6 @@ class DragOverlay {
 
       },
       onDragEnd: (detail){
-        print("onDraEnd:${detail.offset}");
-        //放手时候创建一个DragTarget
         createDragTarget(offset:detail.offset,context:context);
       },
       //当拖拽的时候就展示空
@@ -47,7 +45,7 @@ class DragOverlay {
     if(_holder != null){
       _holder!.remove();
     }
-    _holder = new OverlayEntry(builder: (context){
+    _holder = OverlayEntry(builder: (context){
       bool isLeft = true;
       if(offset!.dx + 100 > MediaQuery.of(context).size.width / 2){
         isLeft = false;
@@ -60,15 +58,11 @@ class DragOverlay {
         right: isLeft ? null : 0,
         child: DragTarget(
           onWillAccept: (dynamic data){
-            print('onWillAccept:$data');
-            ///返回true 会将data数据添加到candidateData列表中，false时会将data添加到rejectData
             return true;
           },
           onAccept: (dynamic data){
-            print('onAccept : $data');
           },
           onLeave: (dynamic data){
-            print("onLeave");
           },
           builder: (BuildContext context,List incoming,List rejected){
             return _buildDraggable(context);

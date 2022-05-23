@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:power_image/power_image.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -29,25 +28,25 @@ class ExampleTool {
 
     String gifStr = await rootBundle.loadString('assets/gif_list.json');
     List<dynamic> gifList = json.decode(gifStr);
-    gifList.forEach((e) {
+    for (var e in gifList) {
       options.add(ExampleSrc(
           src: e,
           imageType: imageTypeNetwork,
           renderingType: renderingType,
           imageWidth: 100,
           imageHeight: 100));
-    });
+    }
 
     String str = await rootBundle.loadString('assets/jpg_list.json');
     List<dynamic> jsonList = json.decode(str);
-    jsonList.forEach((e) {
+    for (var e in jsonList) {
       options.add(ExampleSrc(
           src: e,
           imageType: imageTypeNetwork,
           renderingType: renderingType,
           imageWidth: 100,
           imageHeight: 100));
-    });
+    }
 
 
     return options;
@@ -165,6 +164,7 @@ class ExampleSrc {
   final double? imageHeight;
   final String? package;
 
+  @override
   String toString() {
     return 'src:$src\nimageType: $imageType\nrenderingType: $renderingType\nimageWidth:$imageWidth,imageHeight:$imageHeight,package:$package';
   }

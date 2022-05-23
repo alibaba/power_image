@@ -196,7 +196,7 @@ class PowerImage extends StatefulWidget {
   /// 本接口仅限高阶使用，不要徒增复杂度
   ///
   /// 可能的使用场景：如通过 ffi 解析 decode 前的 data，使用 Hummer 外接 flutter解码库
-  PowerImage({
+  const PowerImage({
     Key? key,
     required this.image,
     this.imageBuilder,
@@ -247,7 +247,7 @@ class PowerImageState extends State<PowerImage> {
       Object error,
       StackTrace? stackTrace,
     ) {
-      return Container(
+      return SizedBox(
         width: widget.width ?? 0,
         height: widget.height ?? 0,
       );

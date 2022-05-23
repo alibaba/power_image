@@ -105,7 +105,7 @@ class _ExamplePageState extends State<ExamplePage> {
         children: [
           Container(
               alignment: Alignment.center,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -148,7 +148,7 @@ class _ExamplePageState extends State<ExamplePage> {
       ),
       body: GridView.builder(
         cacheExtent: 0,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           childAspectRatio: 1,
         ),

@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:power_image/power_image.dart';
-import 'package:power_image/src/common/power_Image_platform_channel.dart';
 import 'package:power_image/src/common/power_image_request.dart';
 
 void main() {
