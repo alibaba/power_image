@@ -1,0 +1,47 @@
+@startuml
+alt renderingType == texture
+PowerImage -> PowerTextureImage:
+else renderingType == external
+PowerImage -> PowerExternalImage: requestOptions-external
+end
+
+PowerTextureImage -> ImageExt: PowerTextureImageProvider
+PowerExternalImage -> ImageExt: PowerExternalImageProvider
+ImageExt -> ImageExt: _resolveImage
+ImageExt -> PowerImageProvider: resolve
+PowerImageProvider -> ImageStream: create
+'ImageStream -> PowerImageProvider
+PowerImageProvider -> ImageCacheExt : putIfAbsent
+
+alt 命中 ImageCache
+    ImageCacheExt -> PowerImageProvider : cached ImageStreamCompleter
+else 未命中 ImageCache
+    ImageCacheExt -> PowerImageProvider: load
+    PowerImageProvider -> ImageCacheExt: ImageStreamCompleter
+'    ImageStreamCompleter -> ImageCacheExt: ImageStreamCompleter
+    ImageCacheExt -> ImageCacheExt : save _pendingImages/_liveImages, addListener
+    ImageCacheExt -> ImageCacheExt :  addListener
+
+'    ImageCacheExt -> ImageStreamCompleter: addListener
+end
+ImageCacheExt -> ImageStreamCompleter
+ImageStreamCompleter -> PowerImageProvider
+PowerImageProvider -> ImageExt: return ImageStream
+ImageExt ->  ImageStream: addListener
+
+ImageCacheExt --> PowerImageLoader : loadImageAsync
+
+PowerImageLoader -> PowerImageChannel : startImageRequests
+
+PowerImageChannel -> Native
+Native -> Native: load Image
+Native --> PowerImageChannel: event: request complete
+PowerImageChannel -> PowerImageLoader: onImageComplete
+PowerImageLoader -> ImageStreamCompleter: setImage
+ImageStreamCompleter -> ImageStreamCompleter: listeners.onImage
+'PowerImageLoader -> ImageStream: completer.complete(map)
+'ImageStream -> ImageStream: call Listeners
+ImageStreamCompleter -> ImageCacheExt: call Listeners: save to _cache
+ImageStreamCompleter -> ImageExt: call Listeners
+ImageExt -> ImageExt: setState
+@enduml
