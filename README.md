@@ -1,9 +1,24 @@
 # PowerImage
 
-A powerful plugin that fully uses the native image library ability to display images on the flutter side.
+A powerful plugin that fully uses the native image library's ability to display images on the flutter side.
 
 [中文文档](README_CN.md)
 
+**Features:**
+
+- Supports the ability to load ui.Image. In the solution based on external texture, the user could not get the real ui.Image to use, which made the image library powerless in this special usage scenario.
+
+- Support image preloading capability. Just like flutter precacheImage. This is very useful in some scenarios that require high image display speed.
+
+- Added texture cache to connect with flutter's imageCache! Unified image cache to avoid memory problems caused by mixing native images.
+
+- Emulators are supported. Before flutter-1.23.0-18.1.pre, the emulator could not display Texture Widget.
+
+- Improve the custom image type channel. Solve the demand for business custom image acquisition.
+
+- Perfect exception capture and collection.
+
+- Support animation.
 
 
 # Usage
