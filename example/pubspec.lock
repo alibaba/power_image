@@ -246,14 +246,14 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.5"
+    version: "0.1.0-pre.1"
   power_image_ext:
     dependency: transitive
     description:
-      path: "../../power_image_ext"
-      relative: true
-    source: path
-    version: "0.0.1"
+      name: power_image_ext
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.5.3"
   process:
     dependency: transitive
     description:

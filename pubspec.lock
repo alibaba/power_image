@@ -98,10 +98,10 @@ packages:
   power_image_ext:
     dependency: "direct main"
     description:
-      path: "../power_image_ext"
-      relative: true
-    source: path
-    version: "0.0.1"
+      name: power_image_ext
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.5.3"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -165,3 +165,4 @@ packages:
     version: "2.1.0"
 sdks:
   dart: ">=2.12.0 <3.0.0"
+  flutter: ">=2.5.3"

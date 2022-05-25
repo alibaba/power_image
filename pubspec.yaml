@@ -1,19 +1,17 @@
 name: power_image
 description: A new flutter plugin project.
-version: 0.1.0
+version: 0.1.0-pre.1
 homepage: https://yuque.antfin-inc.com/docs/share/a53b4f64-949a-4cba-97e9-268533e2caf7?#
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
+  flutter: ">=2.5.3"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  power_image_ext:
-    git:
-      url: "git@github.com:alibaba/power_image_ext.git"
-      ref: "2.5.3"
+  power_image_ext: 2.5.3
 
 dev_dependencies:
   flutter_test:
