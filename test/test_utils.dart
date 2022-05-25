@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:power_image/power_image.dart';
-import 'package:power_image/src/common/power_Image_platform_channel.dart';
+import 'package:power_image/src/common/power_image_platform_channel.dart';
 import 'package:power_image/src/common/power_image_provider.dart';
 import 'package:power_image_ext/image_info_ext.dart';
 import 'dart:ui' as ui;

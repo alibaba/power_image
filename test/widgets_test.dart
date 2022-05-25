@@ -5,7 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:power_image/power_image.dart';
-import 'package:power_image/src/common/power_Image_platform_channel.dart';
+import 'package:power_image/src/common/power_image_platform_channel.dart';
 import 'package:power_image/src/common/power_image_provider.dart';
 import 'package:power_image/src/external/power_external_image.dart';
 import 'package:power_image/src/external/power_external_image_provider.dart';
