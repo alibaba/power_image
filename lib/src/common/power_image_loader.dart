@@ -6,7 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:power_image/src/common/power_image_provider.dart';
 import 'package:power_image_ext/image_info_ext.dart';
 import '../../power_image.dart';
-import 'power_Image_platform_channel.dart';
+import 'power_image_platform_channel.dart';
 import 'power_image_channel.dart';
 import 'power_image_request.dart';
 import '../options/power_image_request_options.dart';

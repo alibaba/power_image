@@ -1,6 +1,6 @@
 name: power_image
 description: A powerful plugin that fully uses the native image library's ability to display images on the flutter side.
-version: 0.1.0-pre.1
+version: 0.1.0-pre.2
 homepage: https://github.com/alibaba/power_image
 
 environment:
