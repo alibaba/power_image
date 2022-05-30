@@ -658,7 +658,15 @@ File:
       double imageHeight})
 ```
 
-Custom Image Type:
+自定义来源图片:
+
+1.自定义 imageType，比如 “album”。
+
+2.自定义 src（PowerImageRequestOptionsSrc），里面放需要传递给native的自定义参数。
+
+3.Native侧自定义Loader，接收Flutter侧传递的参数，然后返回一个Bitmap或UIImage，并注册该Loader。
+
+4.Flutter侧就可以展示自定义的图片了。
 
 ```dart
   /// 自定义 imageType\src
@@ -718,6 +726,86 @@ PowerImage.options(
   })
 ```
 
+
+#### Android
+
+```java
+PowerImageLoader.getInstance().registerImageLoader(
+  new PowerImageAlbumLoader(application.getApplicationContext()), "album");
+```
+
+```java
+public class PowerImageAlbumLoader implements PowerImageLoaderProtocol {
+
+    private final Context context;
+
+    public PowerImageAlbumLoader(Context context) {
+        this.context = context;
+    }
+
+    @Override
+    public void handleRequest(PowerImageRequestConfig request, final PowerImageResponse response) {
+        Map<String, Object> src = request.src;
+        if (src == null || src.get(Const.Argument.ASSET_ID) == null || src.get(Const.Argument.ASSET_TYPE) == null) {
+            PowerImageResult result = PowerImageResult.genFailRet("asset id or assetType == null");
+            response.onResult(result);
+            return;
+        }
+        AssetQuality quality = AssetQuality.values()[(int) src.get(Const.Argument.QUALITY)];
+        boolean highQuality = quality == AssetQuality.fullScreen;
+        final LocalMedia media = new LocalMedia();
+        media.fromMap(src);
+        final ThumbnailLoader thumbnailLoader = new ThumbnailLoader(context);
+        thumbnailLoader.load(media, highQuality, new ThumbnailLoader.ThumbnailLoadListener() {
+            @Override
+            public void onThumbnailLoaded(final Bitmap bitmap) {
+                PowerImageResult result;
+                if (bitmap == null) {
+                    result = PowerImageResult.genFailRet("bitmap == null");
+                } else {
+                    result = PowerImageResult.genSucRet(bitmap);
+                }
+                response.onResult(result);
+            }
+        });
+    }
+
+}
+```
+
+#### iOS
+
+```objective-c
+[[PowerImageLoader sharedInstance] registerImageLoader:[AlbumAssetsImageLoader new] forType:@"album"];
+```
+
+```objective-c
+- (void)handleRequest:(PowerImageRequestConfig *)requestConfig completed:(PowerImageLoaderCompletionBlock)completedBlock {
+    NSString *assetId = requestConfig.src[@"assetId"];
+    NSNumber *imageWidth = requestConfig.src[@"imageWidth"];
+    NSNumber *imageHeight = requestConfig.src[@"imageHeight"];
+    if (assetId) {
+        if (imageWidth && imageHeight) {
+            [[MPAssetManager sharedInstance] getImageWithAssetId:assetId
+                                                       imageSize:CGSizeMake(imageWidth.doubleValue, imageHeight.doubleValue)
+                                                  successHandler:^(UIImage *image) {
+                completedBlock([PowerImageResult successWithImage:image]);
+            } failureHandler:^(NSError *error) {
+                completedBlock([PowerImageResult failWithMessage:error.localizedDescription]);
+            }];
+        } else {
+            [[MPAssetManager sharedInstance] getThumbnail:assetId
+                                           successHandler:^(UIImage *image) {
+                completedBlock([PowerImageResult successWithImage:image]);
+            } failureHandler:^(NSError *error) {
+                completedBlock([PowerImageResult failWithMessage:error.localizedDescription]);
+            }];
+        }
+    } else {
+        completedBlock([PowerImageResult failWithMessage:@"assetId is nil"]);
+    }
+}
+```
 
 
 # 例子
