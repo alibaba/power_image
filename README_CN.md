@@ -257,34 +257,39 @@ Network image loader example:
 
 ```java
 @Override
-public void handleRequest(PowerImageRequestConfig request, PowerImageResult result) {
-    Glide.with(context).load(request.srcString()).into(new CustomTarget<Drawable>(
-        request.width <= 0 ? Target.SIZE_ORIGINAL : request.width,
-        request.height <= 0 ? Target.SIZE_ORIGINAL : request.height){
+public class PowerImageNetworkLoader implements PowerImageLoaderProtocol {
 
-        @Override
-        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-            if (resource instanceof BitmapDrawable) {
-                BitmapDrawable bitmapDrawable = (BitmapDrawable)resource;
-                result.onResult(true, bitmapDrawable.getBitmap());
-            } else if (resource instanceof GifDrawable) {
-                result.onResult(true, ((GifDrawable) resource).getFirstFrame());
-            } else {
-                result.onResult(false, null);
+    private Context context;
+
+    public PowerImageNetworkLoader(Context context) {
+        this.context = context;
+    }
+
+    @Override
+    public void handleRequest(PowerImageRequestConfig request, PowerImageResponse response) {
+        Glide.with(context).asDrawable().load(request.srcString()).listener(new RequestListener<Drawable>() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                response.onResult(PowerImageResult.genFailRet("Native加载失败: " + (e != null ? e.getMessage() : "null")));
+                return true;
             }
-        }
 
-        @Override
-        public void onLoadFailed(@Nullable Drawable errorDrawable) {
-            super.onLoadFailed(errorDrawable);
-            result.onResult(false, null);
-        }
-
-        @Override
-        public void onLoadCleared(@Nullable Drawable placeholder) {
-
-        }
-    });
+            @Override
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                if (resource instanceof GifDrawable) {
+                    response.onResult(PowerImageResult.genSucRet(new GlideMultiFrameImage((GifDrawable) resource, false)));
+                } else {
+                    if (resource instanceof BitmapDrawable) {
+                        response.onResult(PowerImageResult.genSucRet(new FlutterSingleFrameImage((BitmapDrawable) resource)));
+                    } else {
+                        response.onResult(PowerImageResult.genFailRet("Native加载失败:  resource : " + String.valueOf(resource)));
+                    }
+                }
+                return true;
+            }
+        }).submit(request.width <= 0 ? Target.SIZE_ORIGINAL : request.width,
+                request.height <= 0 ? Target.SIZE_ORIGINAL : request.height);
+    }
 }
 ```
 
@@ -292,35 +297,54 @@ public void handleRequest(PowerImageRequestConfig request, PowerImageResult resu
 
 ```kotlin
 class PowerImageNetworkLoader(private val context: Context) : PowerImageLoaderProtocol {
-    override fun handleRequest(request: PowerImageRequestConfig, result: PowerImageResult) {
-        Glide.with(context).load(request.srcString()).into(object : CustomTarget<Drawable?>(
-            if (request.width <= 0) SIZE_ORIGINAL else request.width,
-            if (request.height <= 0) SIZE_ORIGINAL else request.height
-        ) {
-            override fun onResourceReady(
-                resource: Drawable,
-                transition: Transition<in Drawable?>?
-            ) {
-                when (resource) {
-                    is BitmapDrawable -> {
-                        result.onResult(true, resource.bitmap)
-                    }
-                    is GifDrawable -> {
-                        result.onResult(true, resource.firstFrame)
-                    }
-                    else -> {
-                        result.onResult(false, null)
-                    }
+    override fun handleRequest(request: PowerImageRequestConfig, response: PowerImageResponse) {
+        Glide.with(context).asDrawable().load(request.srcString())
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any,
+                    target: Target<Drawable>,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    response.onResult(PowerImageResult.genFailRet("Native加载失败: " + if (e != null) e.message else "null"))
+                    return true
                 }
-            }
 
-            override fun onLoadFailed(@Nullable errorDrawable: Drawable?) {
-                super.onLoadFailed(errorDrawable)
-                result.onResult(false, null)
-            }
-
-            override fun onLoadCleared(@Nullable placeholder: Drawable?) {}
-        })
+                override fun onResourceReady(
+                    resource: Drawable,
+                    model: Any,
+                    target: Target<Drawable>,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    if (resource is GifDrawable) {
+                        response.onResult(
+                            PowerImageResult.genSucRet(
+                                GlideMultiFrameImage(
+                                    resource as GifDrawable,
+                                    false
+                                )
+                            )
+                        )
+                    } else {
+                        if (resource is BitmapDrawable) {
+                            response.onResult(
+                                PowerImageResult.genSucRet(
+                                    FlutterSingleFrameImage(
+                                        resource as BitmapDrawable
+                                    )
+                                )
+                            )
+                        } else {
+                            response.onResult(PowerImageResult.genFailRet("Native加载失败:  resource : $resource"))
+                        }
+                    }
+                    return true
+                }
+            }).submit(
+                if (request.width <= 0) Target.SIZE_ORIGINAL else request.width,
+                if (request.height <= 0) Target.SIZE_ORIGINAL else request.height
+            )
     }
 }
 ```
@@ -330,46 +354,44 @@ native asset loader example:
 #### Java
 
 ```java
-@Override
-public void handleRequest(PowerImageRequestConfig request, PowerImageResult result) {
-    Resources resources = context.getResources();
-    int resourceId = 0;
-    try {
-        resourceId = resources.getIdentifier(request.srcString(),
-                                             "drawable", context.getPackageName());
-    } catch (Resources.NotFoundException e) {
-        // 资源未找到
-        e.printStackTrace();
+public class PowerImageNativeAssetLoader implements PowerImageLoaderProtocol {
+
+    private Context context;
+
+    public PowerImageNativeAssetLoader(Context context) {
+        this.context = context;
     }
-    if (resourceId == 0) {
-        result.onResult(false, null);
-        return;
+
+    @Override
+    public void handleRequest(PowerImageRequestConfig request, PowerImageResponse response) {
+        Resources resources = context.getResources();
+        int resourceId = 0;
+        try {
+            resourceId = resources.getIdentifier(request.srcString(),
+                    "drawable", context.getPackageName());
+        } catch (Resources.NotFoundException e) {
+            // 资源未找到
+            e.printStackTrace();
+        }
+        if (resourceId == 0) {
+            response.onResult(PowerImageResult.genFailRet("资源未找到"));
+            return;
+        }
+        Glide.with(context).asBitmap().load(resourceId).listener(new RequestListener<Bitmap>() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                response.onResult(PowerImageResult.genFailRet("Native加载失败: " + (e != null ? e.getMessage() : "null")));
+                return true;
+            }
+
+            @Override
+            public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                response.onResult(PowerImageResult.genSucRet(resource));
+                return true;
+            }
+        }).submit(request.width <= 0 ? Target.SIZE_ORIGINAL : request.width,
+                request.height <= 0 ? Target.SIZE_ORIGINAL : request.height);
     }
-    Glide.with(context).load(resourceId).into(
-        new CustomTarget<Drawable>(request.width <= 0 ? Target.SIZE_ORIGINAL : request.width,
-                                   request.height <= 0 ? Target.SIZE_ORIGINAL : request.height) {
-            @Override
-            public void onResourceReady(@NonNull Drawable resource,
-                                        @Nullable Transition<? super Drawable> transition) {
-                if (resource instanceof BitmapDrawable) {
-                    BitmapDrawable bitmapDrawable = (BitmapDrawable) resource;
-                    result.onResult(true, bitmapDrawable.getBitmap());
-                } else {
-                    result.onResult(false, null);
-                }
-            }
-
-            @Override
-            public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                super.onLoadFailed(errorDrawable);
-                result.onResult(false, null);
-            }
-
-            @Override
-            public void onLoadCleared(@Nullable Drawable placeholder) {
-
-            }
-        });
 }
 ```
 
@@ -390,33 +412,34 @@ class PowerImageNativeAssetLoader(private val context: Context) : PowerImageLoad
             e.printStackTrace()
         }
         if (resourceId == 0) {
-            result.onResult(false, null)
+            response.onResult(PowerImageResult.genFailRet("资源未找到"))
             return
         }
-        Glide.with(context).load(resourceId).into(
-            object : CustomTarget<Drawable?>(
-                if (request.width <= 0) SIZE_ORIGINAL else request.width,
-                if (request.height <= 0) SIZE_ORIGINAL else request.height
-            ) {
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: Transition<in Drawable?>?
-                ) {
-                    if (resource is BitmapDrawable) {
-                        val bitmapDrawable: BitmapDrawable = resource as BitmapDrawable
-                        result.onResult(true, bitmapDrawable.bitmap)
-                    } else {
-                        result.onResult(false, null)
-                    }
-                }
+        Glide.with(context).asBitmap().load(resourceId).listener(object : RequestListener<Bitmap?> {
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any,
+                target: Target<Bitmap?>,
+                isFirstResource: Boolean
+            ): Boolean {
+                response.onResult(PowerImageResult.genFailRet("Native加载失败: " + if (e != null) e.message else "null"))
+                return true
+            }
 
-                override fun onLoadFailed(errorDrawable: Drawable?) {
-                    super.onLoadFailed(errorDrawable)
-                    result.onResult(false, null)
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {}
-            })
+            override fun onResourceReady(
+                resource: Bitmap?,
+                model: Any,
+                target: Target<Bitmap?>,
+                dataSource: DataSource,
+                isFirstResource: Boolean
+            ): Boolean {
+                response.onResult(PowerImageResult.genSucRet(resource))
+                return true
+            }
+        }).submit(
+            if (request.width <= 0) Target.SIZE_ORIGINAL else request.width,
+            if (request.height <= 0) Target.SIZE_ORIGINAL else request.height
+        )
     }
 }
 
@@ -427,104 +450,52 @@ flutter asset loader example:
 #### Java
 
 ```java
-@Override
-public void handleRequest(PowerImageRequestConfig request, PowerImageResult result) {
-    String name = request.srcString();
-    if (name == null || name.length() <= 0) {
-        result.onResult(false, null);
-        return;
+public class PowerImageFlutterAssetLoader implements PowerImageLoaderProtocol {
+
+    private Context context;
+
+    public PowerImageFlutterAssetLoader(Context context) {
+        this.context = context;
     }
-    String assetPackage = "";
-    if (request.src != null) {
-        assetPackage = (String) request.src.get("package");
-    }
-    String path;
-    if (assetPackage != null && assetPackage.length() > 0) {
-        path = FlutterMain.getLookupKeyForAsset(name, assetPackage);
-    } else {
-        path = FlutterMain.getLookupKeyForAsset(name);
-    }
-    if (path == null || path.length() <= 0) {
-        result.onResult(false, null);
-        return;
-    }
-    Uri asset = Uri.parse("file:///android_asset/" + path);
-    Glide.with(context).load(asset).into(
-        new CustomTarget<Drawable>(request.width <= 0 ? Target.SIZE_ORIGINAL : request.width,
-                                   request.height <= 0 ? Target.SIZE_ORIGINAL : request.height) {
-            @Override
-            public void onResourceReady(@NonNull Drawable resource,
-                                        @Nullable Transition<? super Drawable> transition) {
-                if (resource instanceof BitmapDrawable) {
-                    BitmapDrawable bitmapDrawable = (BitmapDrawable) resource;
-                    result.onResult(true, bitmapDrawable.getBitmap());
-                } else if (resource instanceof GifDrawable) {
-                    result.onResult(true, ((GifDrawable) resource).getFirstFrame());
-                }
-            }
 
-            @Override
-            public void onLoadCleared(@Nullable Drawable placeholder) {
-
-            }
-
-            @Override
-            public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                super.onLoadFailed(errorDrawable);
-                result.onResult(false, null);
-            }
-        });
-}
-```
-
-#### Kotlin
-
-```kotlin
-class PowerImageFlutterAssetLoader(private val context: Context) : PowerImageLoaderProtocol {
-    override fun handleRequest(request: PowerImageRequestConfig, response: PowerImageResponse) {
-        val name: String = request.srcString()
-        if (name.isEmpty()) {
-            result.onResult(false, null)
-            return
+    @Override
+    public void handleRequest(PowerImageRequestConfig request, PowerImageResponse response) {
+        String name = request.srcString();
+        if (name == null || name.length() <= 0) {
+            response.onResult(PowerImageResult.genFailRet("src 为空"));
+            return;
         }
-        var assetPackage = ""
+        String assetPackage = "";
         if (request.src != null) {
-            assetPackage = request.src.get("package")
+            assetPackage = (String) request.src.get("package");
         }
-        val path: String = if (assetPackage.isNotEmpty()) {
-            FlutterMain.getLookupKeyForAsset(name, assetPackage)
+        String path;
+        if (assetPackage != null && assetPackage.length() > 0) {
+            path = FlutterMain.getLookupKeyForAsset(name, assetPackage);
         } else {
-            FlutterMain.getLookupKeyForAsset(name)
+            path = FlutterMain.getLookupKeyForAsset(name);
         }
-        if (path.isEmpty()) {
-            result.onResult(false, null)
-            return
+        if (path == null || path.length() <= 0) {
+            response.onResult(PowerImageResult.genFailRet("path 为空"));
+            return;
         }
-        val asset = Uri.parse("file:///android_asset/$path")
-        Glide.with(context).load(asset).into(
-            object : CustomTarget<Drawable?>(
-                if (request.width <= 0) SIZE_ORIGINAL else request.width,
-                if (request.height <= 0) SIZE_ORIGINAL else request.height
-            ) {
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: Transition<in Drawable?>?
-                ) {
-                    if (resource is BitmapDrawable) {
-                        val bitmapDrawable: BitmapDrawable = resource as BitmapDrawable
-                        result.onResult(true, bitmapDrawable.bitmap)
-                    } else if (resource is GifDrawable) {
-                        result.onResult(true, (resource as GifDrawable).firstFrame)
-                    }
-                }
+        Uri asset = Uri.parse("file:///android_asset/" + path);
+        Glide.with(context).asBitmap().load(asset).listener(new RequestListener<Bitmap>() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                response.onResult(PowerImageResult.genFailRet("Native加载失败: " + (e != null ? e.getMessage() : "null")));
+                return true;
+            }
 
-                override fun onLoadCleared(placeholder: Drawable?) {}
-                override fun onLoadFailed(errorDrawable: Drawable?) {
-                    super.onLoadFailed(errorDrawable)
-                    result.onResult(false, null)
-                }
-            })
+            @Override
+            public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                response.onResult(PowerImageResult.genSucRet(resource));
+                return true;
+            }
+        }).submit(request.width <= 0 ? Target.SIZE_ORIGINAL : request.width,
+                request.height <= 0 ? Target.SIZE_ORIGINAL : request.height);
     }
+
 }
 ```
 
@@ -533,39 +504,37 @@ file loader example:
 #### Java
 
 ```java
-@Override
-public void handleRequest(PowerImageRequestConfig request, PowerImageResult result) {
-    String name = request.srcString();
-    if (name == null || name.length() <= 0) {
-        result.onResult(false, null);
-        return;
+public class PowerImageFileLoader implements PowerImageLoaderProtocol {
+
+    private final Context context;
+
+    public PowerImageFileLoader(Context context) {
+        this.context = context;
     }
-    Uri asset = Uri.parse("file://" + name);
-    Glide.with(context).load(asset).into(
-        new CustomTarget<Drawable>(request.width <= 0 ? Target.SIZE_ORIGINAL : request.width,
-                                   request.height <= 0 ? Target.SIZE_ORIGINAL : request.height) {
+
+    @Override
+    public void handleRequest(PowerImageRequestConfig request, PowerImageResponse response) {
+        String name = request.srcString();
+        if (name == null || name.length() <= 0) {
+            response.onResult(PowerImageResult.genFailRet("src 为空"));
+            return;
+        }
+        Uri asset = Uri.parse("file://" + name);
+        Glide.with(context).asBitmap().load(asset).listener(new RequestListener<Bitmap>() {
             @Override
-            public void onResourceReady(@NonNull Drawable resource,
-                                        @Nullable Transition<? super Drawable> transition) {
-                if (resource instanceof BitmapDrawable) {
-                    BitmapDrawable bitmapDrawable = (BitmapDrawable) resource;
-                    result.onResult(true, bitmapDrawable.getBitmap());
-                } else if (resource instanceof GifDrawable) {
-                    result.onResult(true, ((GifDrawable) resource).getFirstFrame());
-                }
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                response.onResult(PowerImageResult.genFailRet("Native加载失败: " + (e != null ? e.getMessage() : "null")));
+                return true;
             }
 
             @Override
-            public void onLoadCleared(@Nullable Drawable placeholder) {
-
+            public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                response.onResult(PowerImageResult.genSucRet(resource));
+                return true;
             }
-
-            @Override
-            public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                super.onLoadFailed(errorDrawable);
-                result.onResult(false, null);
-            }
-        });
+        }).submit(request.width <= 0 ? Target.SIZE_ORIGINAL : request.width,
+                request.height <= 0 ? Target.SIZE_ORIGINAL : request.height);
+    }
 }
 ```
 
@@ -574,35 +543,37 @@ public void handleRequest(PowerImageRequestConfig request, PowerImageResult resu
 ```kotlin
 class PowerImageFileLoader(private val context: Context) : PowerImageLoaderProtocol {
     override fun handleRequest(request: PowerImageRequestConfig, response: PowerImageResponse) {
-        val name: String = request.srcString()
-        if (name.isEmpty()) {
-            result.onResult(false, null)
+        val name = request.srcString()
+        if (name == null || name.length <= 0) {
+            response.onResult(PowerImageResult.genFailRet("src 为空"))
             return
         }
         val asset = Uri.parse("file://$name")
-        Glide.with(context).load(asset).into(
-            object : CustomTarget<Drawable?>(
-                if (request.width <= 0) SIZE_ORIGINAL else request.width,
-                if (request.height <= 0) SIZE_ORIGINAL else request.height
-            ) {
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: Transition<in Drawable?>?
-                ) {
-                    if (resource is BitmapDrawable) {
-                        val bitmapDrawable: BitmapDrawable = resource as BitmapDrawable
-                        result.onResult(true, bitmapDrawable.bitmap)
-                    } else if (resource is GifDrawable) {
-                        result.onResult(true, (resource as GifDrawable).firstFrame)
-                    }
-                }
+        Glide.with(context).asBitmap().load(asset).listener(object : RequestListener<Bitmap?> {
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any,
+                target: Target<Bitmap?>,
+                isFirstResource: Boolean
+            ): Boolean {
+                response.onResult(PowerImageResult.genFailRet("Native加载失败: " + if (e != null) e.message else "null"))
+                return true
+            }
 
-                override fun onLoadCleared(placeholder: Drawable?) {}
-                override fun onLoadFailed(errorDrawable: Drawable?) {
-                    super.onLoadFailed(errorDrawable)
-                    result.onResult(false, null)
-                }
-            })
+            override fun onResourceReady(
+                resource: Bitmap?,
+                model: Any,
+                target: Target<Bitmap?>,
+                dataSource: DataSource,
+                isFirstResource: Boolean
+            ): Boolean {
+                response.onResult(PowerImageResult.genSucRet(resource))
+                return true
+            }
+        }).submit(
+            if (request.width <= 0) Target.SIZE_ORIGINAL else request.width,
+            if (request.height <= 0) Target.SIZE_ORIGINAL else request.height
+        )
     }
 }
 ```
