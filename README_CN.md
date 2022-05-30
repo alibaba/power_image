@@ -2,7 +2,7 @@
 
 一个充分利用原生图片库能力、高扩展性的flutter图片库。
 
-[English document](README.md)
+[English document](https://github.com/alibaba/power_image/blob/main/README.md)
 
 **特点：**
 
@@ -25,7 +25,7 @@
 ## 安装
 
 - power_image：推荐使用最新版本，[power_image pub versions](https://pub.dev/packages/power_image/versions)
-- power_image_ext：你需要根据你使用的flutter版本来选择版本，[power_image_ext pub versions](pubhttps://pub.dev/packages/power_image_ext/versions)
+- power_image_ext：你需要根据你使用的flutter版本来选择版本，[power_image_ext pub versions](https://pub.dev/packages/power_image_ext/versions)
 
 将下方配置加入到 `pubspec.yaml` 文件中:
 

@@ -2,7 +2,7 @@
 
 A powerful plugin that fully uses the native image library's ability to display images on the flutter side.
 
-[中文文档](README_CN.md)
+[中文文档](https://github.com/alibaba/power_image/blob/main/README_CN.md)
 
 **Features:**
 
@@ -26,7 +26,7 @@ A powerful plugin that fully uses the native image library's ability to display 
 ## Installation
 
 - power_image：It is recommended to use the latest version, [power_image pub versions](https://pub.dev/packages/power_image/versions)
-- power_image_ext：You need to choose the version based on the flutter version you are using.  Go to [power_image_ext](https://github.com/alibaba/power_image_ext) for details！[power_image_ext pub versions](pubhttps://pub.dev/packages/power_image_ext/versions)
+- power_image_ext：You need to choose the version based on the flutter version you are using.  Go to [power_image_ext](https://github.com/alibaba/power_image_ext) for details！[power_image_ext pub versions](https://pub.dev/packages/power_image_ext/versions)
 
 Add the following to your `pubspec.yaml` file:
 ```yaml
