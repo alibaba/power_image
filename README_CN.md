@@ -256,7 +256,6 @@ Network image loader example:
 #### Java
 
 ```java
-@Override
 public class PowerImageNetworkLoader implements PowerImageLoaderProtocol {
 
     private Context context;
