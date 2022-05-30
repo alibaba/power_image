@@ -707,7 +707,7 @@ Custom Image Type:
 
 3.Register custom loader in Android and iOS for "album" to receive argument and return Bitmap or UIImage.
 
-4.Flutter Page will display Image successfully.
+4.Flutter Side will display Image successfully.
 
 ```dart
   /// 自定义 imageType\src
