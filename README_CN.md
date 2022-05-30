@@ -2,7 +2,7 @@
 
 一个充分利用原生图片库能力、高扩展性的flutter图片库。
 
-[English document](https://github.com/alibaba/power_image/blob/main/README.md)
+[English document](README.md)
 
 **特点：**
 
@@ -18,34 +18,24 @@
 
 - 完善的异常捕获与收集。
 
-- 支持动图。（来自淘特的 PR）
+- 支持动图。
 
 # 使用
 
 ## 安装
 
-- power_image：推荐使用最新版本，[power_image pub versions](https://pub.dev/packages/power_image/versions)
-- power_image_ext：你需要根据你使用的flutter版本来选择版本，[power_image_ext pub versions](https://pub.dev/packages/power_image_ext/versions)
+- power_image：推荐使用最新版本
+- power_image_ext：你需要根据你使用的flutter版本来选择版本
 
 将下方配置加入到 `pubspec.yaml` 文件中:
-
-```yaml
-dependencies:
-  power_image: 0.1.0-pre.2
-      
-dependency_overrides:
-  power_image_ext: 2.5.3
-```
-
-或者直接引用 GitHub 源码：
 
 ```yaml
 dependencies:
   power_image:
     git:
       url: 'git@github.com:alibaba/power_image.git'
-      ref: '0.1.0-pre.2'
-
+      ref: '0.1.0'
+      
 dependency_overrides:
   power_image_ext:
     git:
@@ -223,6 +213,8 @@ file loader example:
 
 PowerImage 提供了基础的图片类型，包括网络图（network）、文件（file）、native 资源（nativeAsset）、flutter 资源（asset），使用方需要自定义对应的加载器。
 
+#### Java
+
 ```java
 PowerImageLoader.getInstance().registerImageLoader(
                 new PowerImageNetworkLoader(this.getApplicationContext()), "network");
@@ -234,6 +226,23 @@ PowerImageLoader.getInstance().registerImageLoader(
                 new PowerImageFileLoader(this.getApplicationContext()), "file");
 ```
 
+#### Kotlin
+
+```kotlin
+PowerImageLoader.getInstance().registerImageLoader(
+            PowerImageNetworkLoader(this.applicationContext), "network"
+)
+PowerImageLoader.getInstance().registerImageLoader(
+            PowerImageNativeAssetLoader(this.applicationContext), "nativeAsset"
+)
+PowerImageLoader.getInstance().registerImageLoader(
+            PowerImageFlutterAssetLoader(this.applicationContext), "asset"
+)
+PowerImageLoader.getInstance().registerImageLoader(
+            PowerImageFileLoader(this.applicationContext), "file"
+)
+```
+
 loader 需要遵循 PowerImageLoaderProtocol 协议：
 
 ```java
@@ -242,8 +251,9 @@ public interface PowerImageLoaderProtocol {
 }
 ```
 
-
 Network image loader example:
+
+#### Java
 
 ```java
 @Override
@@ -278,7 +288,46 @@ public void handleRequest(PowerImageRequestConfig request, PowerImageResult resu
 }
 ```
 
+#### Kotlin
+
+```kotlin
+class PowerImageNetworkLoader(private val context: Context) : PowerImageLoaderProtocol {
+    override fun handleRequest(request: PowerImageRequestConfig, result: PowerImageResult) {
+        Glide.with(context).load(request.srcString()).into(object : CustomTarget<Drawable?>(
+            if (request.width <= 0) SIZE_ORIGINAL else request.width,
+            if (request.height <= 0) SIZE_ORIGINAL else request.height
+        ) {
+            override fun onResourceReady(
+                resource: Drawable,
+                transition: Transition<in Drawable?>?
+            ) {
+                when (resource) {
+                    is BitmapDrawable -> {
+                        result.onResult(true, resource.bitmap)
+                    }
+                    is GifDrawable -> {
+                        result.onResult(true, resource.firstFrame)
+                    }
+                    else -> {
+                        result.onResult(false, null)
+                    }
+                }
+            }
+
+            override fun onLoadFailed(@Nullable errorDrawable: Drawable?) {
+                super.onLoadFailed(errorDrawable)
+                result.onResult(false, null)
+            }
+
+            override fun onLoadCleared(@Nullable placeholder: Drawable?) {}
+        })
+    }
+}
+```
+
 native asset loader example:
+
+#### Java
 
 ```java
 @Override
@@ -324,8 +373,58 @@ public void handleRequest(PowerImageRequestConfig request, PowerImageResult resu
 }
 ```
 
+#### Kotlin
+
+```kotlin
+class PowerImageNativeAssetLoader(private val context: Context) : PowerImageLoaderProtocol {
+    override fun handleRequest(request: PowerImageRequestConfig, response: PowerImageResponse) {
+        val resources = context.resources
+        var resourceId = 0
+        try {
+            resourceId = resources.getIdentifier(
+                request.srcString(),
+                "drawable", context.packageName
+            )
+        } catch (e: Resources.NotFoundException) {
+            // 资源未找到
+            e.printStackTrace()
+        }
+        if (resourceId == 0) {
+            result.onResult(false, null)
+            return
+        }
+        Glide.with(context).load(resourceId).into(
+            object : CustomTarget<Drawable?>(
+                if (request.width <= 0) SIZE_ORIGINAL else request.width,
+                if (request.height <= 0) SIZE_ORIGINAL else request.height
+            ) {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable?>?
+                ) {
+                    if (resource is BitmapDrawable) {
+                        val bitmapDrawable: BitmapDrawable = resource as BitmapDrawable
+                        result.onResult(true, bitmapDrawable.bitmap)
+                    } else {
+                        result.onResult(false, null)
+                    }
+                }
+
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    super.onLoadFailed(errorDrawable)
+                    result.onResult(false, null)
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {}
+            })
+    }
+}
+
+```
 
 flutter asset loader example:
+
+#### Java
 
 ```java
 @Override
@@ -378,8 +477,60 @@ public void handleRequest(PowerImageRequestConfig request, PowerImageResult resu
 }
 ```
 
+#### Kotlin
+
+```kotlin
+class PowerImageFlutterAssetLoader(private val context: Context) : PowerImageLoaderProtocol {
+    override fun handleRequest(request: PowerImageRequestConfig, response: PowerImageResponse) {
+        val name: String = request.srcString()
+        if (name.isEmpty()) {
+            result.onResult(false, null)
+            return
+        }
+        var assetPackage = ""
+        if (request.src != null) {
+            assetPackage = request.src.get("package")
+        }
+        val path: String = if (assetPackage.isNotEmpty()) {
+            FlutterMain.getLookupKeyForAsset(name, assetPackage)
+        } else {
+            FlutterMain.getLookupKeyForAsset(name)
+        }
+        if (path.isEmpty()) {
+            result.onResult(false, null)
+            return
+        }
+        val asset = Uri.parse("file:///android_asset/$path")
+        Glide.with(context).load(asset).into(
+            object : CustomTarget<Drawable?>(
+                if (request.width <= 0) SIZE_ORIGINAL else request.width,
+                if (request.height <= 0) SIZE_ORIGINAL else request.height
+            ) {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable?>?
+                ) {
+                    if (resource is BitmapDrawable) {
+                        val bitmapDrawable: BitmapDrawable = resource as BitmapDrawable
+                        result.onResult(true, bitmapDrawable.bitmap)
+                    } else if (resource is GifDrawable) {
+                        result.onResult(true, (resource as GifDrawable).firstFrame)
+                    }
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {}
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    super.onLoadFailed(errorDrawable)
+                    result.onResult(false, null)
+                }
+            })
+    }
+}
+```
 
 file loader example:
+
+#### Java
 
 ```java
 @Override
@@ -417,6 +568,46 @@ public void handleRequest(PowerImageRequestConfig request, PowerImageResult resu
         });
 }
 ```
+
+#### Kotlin
+
+```kotlin
+class PowerImageFileLoader(private val context: Context) : PowerImageLoaderProtocol {
+    override fun handleRequest(request: PowerImageRequestConfig, response: PowerImageResponse) {
+        val name: String = request.srcString()
+        if (name.isEmpty()) {
+            result.onResult(false, null)
+            return
+        }
+        val asset = Uri.parse("file://$name")
+        Glide.with(context).load(asset).into(
+            object : CustomTarget<Drawable?>(
+                if (request.width <= 0) SIZE_ORIGINAL else request.width,
+                if (request.height <= 0) SIZE_ORIGINAL else request.height
+            ) {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable?>?
+                ) {
+                    if (resource is BitmapDrawable) {
+                        val bitmapDrawable: BitmapDrawable = resource as BitmapDrawable
+                        result.onResult(true, bitmapDrawable.bitmap)
+                    } else if (resource is GifDrawable) {
+                        result.onResult(true, (resource as GifDrawable).firstFrame)
+                    }
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {}
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    super.onLoadFailed(errorDrawable)
+                    result.onResult(false, null)
+                }
+            })
+    }
+}
+```
+
+
 
 ## API
 
