@@ -18,24 +18,34 @@
 
 - 完善的异常捕获与收集。
 
-- 支持动图。
+- 支持动图。（来自淘特的 PR）
 
 # 使用
 
 ## 安装
 
-- power_image：推荐使用最新版本
-- power_image_ext：你需要根据你使用的flutter版本来选择版本
+- power_image：推荐使用最新版本，[power_image pub versions](https://pub.dev/packages/power_image/versions)
+- power_image_ext：你需要根据你使用的flutter版本来选择版本，[power_image_ext pub versions](pubhttps://pub.dev/packages/power_image_ext/versions)
 
 将下方配置加入到 `pubspec.yaml` 文件中:
+
+```yaml
+dependencies:
+  power_image: 0.1.0-pre.2
+      
+dependency_overrides:
+  power_image_ext: 2.5.3
+```
+
+或者直接引用 GitHub 源码：
 
 ```yaml
 dependencies:
   power_image:
     git:
       url: 'git@github.com:alibaba/power_image.git'
-      ref: '0.1.0'
-      
+      ref: '0.1.0-pre.2'
+
 dependency_overrides:
   power_image_ext:
     git:
