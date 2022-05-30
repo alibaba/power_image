@@ -27,9 +27,9 @@ If applicable, add screenshots to help explain your problem.
 **Versions (please complete the following information):**
  - Device: [e.g. iPhone6]
  - OS: [e.g. iOS8.1]
- - Flutter doctor -v 
- - power_image Version [e.g. 0.1.0]
- - power_image_ext Version [e.g. 2.5.3]
+ - `flutter doctor -v`:
+ - power_image Version: [e.g. 0.1.0]
+ - power_image_ext Version: [e.g. 2.5.3]
 
 **Additional context**
 Add any other context about the problem here.
