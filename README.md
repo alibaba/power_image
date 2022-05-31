@@ -2,7 +2,7 @@
 
 A powerful plugin that fully uses the native image library's ability to display images on the flutter side.
 
-[中文文档](README_CN.md)
+[中文文档](https://github.com/alibaba/power_image/blob/main/README_CN.md)
 
 **Features:**
 
@@ -18,24 +18,33 @@ A powerful plugin that fully uses the native image library's ability to display 
 
 - Perfect exception capture and collection.
 
-- Support animation.
+- Support animation. (PR from LiteTao)
 
 
 # Usage
 
 ## Installation
 
-- power_image：It is recommended to use the latest version
-- power_image_ext：You need to choose the version based on the flutter version you are using.  Go to [power_image_ext](https://github.com/alibaba/power_image_ext) for details！
+- power_image：It is recommended to use the latest version, [power_image pub versions](https://pub.dev/packages/power_image/versions)
+- power_image_ext：You need to choose the version based on the flutter version you are using.  Go to [power_image_ext](https://github.com/alibaba/power_image_ext) for details！[power_image_ext pub versions](https://pub.dev/packages/power_image_ext/versions)
 
 Add the following to your `pubspec.yaml` file:
+```yaml
+dependencies:
+  power_image: 0.1.0-pre.2
+      
+dependency_overrides:
+  power_image_ext: 2.5.3
+```
+
+or use code in github directly:
 
 ```yaml
 dependencies:
   power_image:
     git:
       url: 'git@github.com:alibaba/power_image.git'
-      ref: '0.1.0'
+      ref: '0.1.0-pre.2'
       
 dependency_overrides:
   power_image_ext:
