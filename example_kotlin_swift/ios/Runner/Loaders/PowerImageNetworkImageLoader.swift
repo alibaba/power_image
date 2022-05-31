@@ -11,13 +11,8 @@ import SDWebImage
 class PowerImageNetworkImageLoader:NSObject,PowerImageLoaderProtocol{
     
     func handleRequest(_ requestConfig: PowerImageRequestConfig!, completed completedBlock: PowerImageLoaderCompletionBlock!) {
-        
-        
         let reqSize:CGSize = requestConfig.originSize
-        
         let url = URL(string: requestConfig.srcString())
-        
-        
         SDWebImageManager.shared.loadImage(with: url, progress: nil) { image, data, error, cacheType, finished, url in
             
             if let image = image {
@@ -41,8 +36,5 @@ class PowerImageNetworkImageLoader:NSObject,PowerImageLoaderProtocol{
                 completedBlock(PowerImageResult.fail(withMessage: error?.localizedDescription ?? "PowerImageNetworkLoaderError!"))
             }   
         }
-        
     }
-    
-    
 }

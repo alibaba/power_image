@@ -97,6 +97,14 @@ PowerImage 提供了基础的图片类型，包括网络图（network）、文�
 ```
 
 
+```swift
+        PowerImageLoader.sharedInstance().register(PowerImageNetworkImageLoader.init(), forType: kPowerImageImageTypeNetwork)
+        PowerImageLoader.sharedInstance().register(PowerImageAssetsImageLoader.init(), forType: kPowerImageImageTypeNativeAsset)
+        PowerImageLoader.sharedInstance().register(PowerImageFlutterAssertImageLoader.init(), forType: kPowerImageImageTypeAsset)
+        PowerImageLoader.sharedInstance().register(PowerImageFileImageLoader.init(), forType: kPowerImageImageTypeFile)
+```
+
+
 loader 需要遵循 PowerImageLoaderProtocol 协议：
 
 ```objectivec
@@ -135,6 +143,38 @@ Network image loader example:
 }
 ```
 
+
+```swift
+
+func handleRequest(_ requestConfig: PowerImageRequestConfig!, completed completedBlock: PowerImageLoaderCompletionBlock!) {
+        let reqSize:CGSize = requestConfig.originSize
+        let url = URL(string: requestConfig.srcString())
+        SDWebImageManager.shared.loadImage(with: url, progress: nil) { image, data, error, cacheType, finished, url in
+            
+            if let image = image {
+                if (image.sd_isAnimated) {
+                    let frames:[SDImageFrame] = SDImageCoderHelper.frames(from: image)!
+                    if frames.count > 0 {
+                        var arr:[PowerImageFrame] = []
+                        for index in 0..<frames.count {
+                            let frame:SDImageFrame = frames[index]
+                            arr.append(PowerImageFrame(image: frame.image, duration: frame.duration))
+                        }
+                        let flutterImage = PowerFlutterMultiFrameImage(image: image, frames: arr)
+                        completedBlock(PowerImageResult.success(with: flutterImage))
+                        return
+                    }
+                }
+                
+                completedBlock(PowerImageResult.success(with: image))
+                
+            }else{
+                completedBlock(PowerImageResult.fail(withMessage: error?.localizedDescription ?? "PowerImageNetworkLoaderError!"))
+            }   
+       }
+}
+```
+
 native asset loader example:
 
 ```objectivec
@@ -146,6 +186,22 @@ native asset loader example:
         completedBlock([PowerImageResult failWithMessage:@"MyAssetsImageLoader UIImage imageNamed: nil"]);
     }
 }
+```
+
+
+```swift
+
+func handleRequest(_ requestConfig: PowerImageRequestConfig!, completed completedBlock: PowerImageLoaderCompletionBlock!) {
+        
+        let image = UIImage(named: requestConfig.srcString())
+        
+        if let image = image {
+            completedBlock(PowerImageResult.success(with: image))
+        }else{
+            completedBlock(PowerImageResult.fail(withMessage: "PowerImageAssetsImageLoaderError!"))
+        }
+    }
+
 ```
 
 flutter asset loader example:
@@ -193,6 +249,50 @@ flutter asset loader example:
 
 ```
 
+```swift
+
+func handleRequest(_ requestConfig: PowerImageRequestConfig!, completed completedBlock: PowerImageLoaderCompletionBlock!) {
+        let image = self.flutterImage(requestConfig: requestConfig)
+        if let image = image {
+            completedBlock(PowerImageResult.success(with: image))
+        }else {
+            completedBlock(PowerImageResult.fail(withMessage: "PowerImageFlutterAssertImageLoaderError"))
+        }
+    }
+    
+    
+    private func flutterImage(requestConfig:PowerImageRequestConfig) -> UIImage? {
+        
+        let name:String = requestConfig.srcString()!
+        let package:String? = requestConfig.src["package"] as? String
+        let fileName:String = NSString(string: name).lastPathComponent
+        let path:String = NSString(string: name).deletingLastPathComponent
+        
+        
+        let scaleArr:[Int] = (2...Int(UIScreen.main.scale)).reversed()
+        
+        for scale in scaleArr {
+            let key:String = self.lookupKeyForAsset(asset: String(format: "%s/%d.0x/%s", path,scale,fileName), package: package)
+            let image = UIImage(named: key,in: Bundle.main,compatibleWith: nil)
+            if image != nil {
+                return image!
+            }
+        }
+        
+        let key = self.lookupKeyForAsset(asset: name, package: package)
+        return UIImage(named: key,in: Bundle.main,compatibleWith: nil)
+    }
+    
+    private func lookupKeyForAsset(asset:String,package:String?) -> String {
+        if let package = package, package != "" {
+            return FlutterDartProject.lookupKey(forAsset: asset,fromPackage: package)
+        }else{
+            return FlutterDartProject.lookupKey(forAsset: asset)
+        }
+    }
+
+```
+
 file loader example:
 
 ```objectivec
@@ -206,6 +306,21 @@ file loader example:
         completedBlock([PowerImageResult failWithMessage:@"UIImage initWithContentsOfFile nil"]);
     }
 }
+```
+
+```swift
+
+func handleRequest(_ requestConfig: PowerImageRequestConfig!, completed completedBlock: PowerImageLoaderCompletionBlock!) {
+        
+        let image = UIImage(contentsOfFile: requestConfig.srcString())
+        
+        if let image = image {
+            completedBlock(PowerImageResult.success(with: image))
+        }else{
+            completedBlock(PowerImageResult.fail(withMessage: "PowerImageFileImageLoaderError!"))
+        }
+    }
+
 ```
 
 
