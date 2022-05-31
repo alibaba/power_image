@@ -84,12 +84,16 @@ In addition, there are exception reports in PowerImageSetupOptions, and the samp
 
 PowerImage provides basic image types, including network, file, nativeAsset, and flutter assets. Users need to customize their corresponding loaders.
 
+#### OC
+
 ```objectivec
     [[PowerImageLoader sharedInstance] registerImageLoader:[PowerImageNetworkImageLoader new] forType:kPowerImageImageTypeNetwork];
     [[PowerImageLoader sharedInstance] registerImageLoader:[PowerImageAssetsImageLoader new] forType:kPowerImageImageTypeNativeAsset];
     [[PowerImageLoader sharedInstance] registerImageLoader:[PowerImageFlutterAssertImageLoader new] forType:kPowerImageImageTypeAsset];
     [[PowerImageLoader sharedInstance] registerImageLoader:[PowerImageFileImageLoader new] forType:kPowerImageImageTypeFile];
 ```
+
+#### Swift
 
 ```swift
         PowerImageLoader.sharedInstance().register(PowerImageNetworkImageLoader.init(), forType: kPowerImageImageTypeNetwork)
@@ -114,6 +118,8 @@ typedef void(^PowerImageLoaderCompletionBlock)(BOOL success, PowerImageResult *i
 
 Network image loader example:
 
+#### OC
+
 ```objectivec
 - (void)handleRequest:(PowerImageRequestConfig *)requestConfig completed:(PowerImageLoaderCompletionBlock)completedBlock {
     
@@ -136,6 +142,8 @@ Network image loader example:
 
 }
 ```
+
+#### Swift
 
 ```swift
 
@@ -169,6 +177,7 @@ func handleRequest(_ requestConfig: PowerImageRequestConfig!, completed complete
 ```
 
 native asset loader example:
+#### OC
 ```objectivec
 - (void)handleRequest:(PowerImageRequestConfig *)requestConfig completed:(PowerImageLoaderCompletionBlock)completedBlock {
     UIImage *image = [UIImage imageNamed:requestConfig.srcString];
@@ -179,7 +188,7 @@ native asset loader example:
     }
 }
 ```
-
+#### Swift
 ```swift
 
 func handleRequest(_ requestConfig: PowerImageRequestConfig!, completed completedBlock: PowerImageLoaderCompletionBlock!) {
@@ -196,6 +205,7 @@ func handleRequest(_ requestConfig: PowerImageRequestConfig!, completed complete
 ```
 
 flutter asset loader example:
+#### OC
 ```objectivec
 - (void)handleRequest:(PowerImageRequestConfig *)requestConfig completed:(PowerImageLoaderCompletionBlock)completedBlock {
     UIImage *image = [self flutterImageWithName:requestConfig];
@@ -238,6 +248,8 @@ flutter asset loader example:
 }
 
 ```
+
+#### Swift
 
 ```swift
 
@@ -284,6 +296,7 @@ func handleRequest(_ requestConfig: PowerImageRequestConfig!, completed complete
 ```
 
 file loader example:
+#### OC
 ```objectivec
 - (void)handleRequest:(PowerImageRequestConfig *)requestConfig completed:(PowerImageLoaderCompletionBlock)completedBlock {
     
@@ -296,6 +309,8 @@ file loader example:
     }
 }
 ```
+
+#### Swift
 
 ```swift
 

@@ -89,6 +89,8 @@ class XXX extends WidgetsFlutterBinding {
 
 PowerImage 提供了基础的图片类型，包括网络图（network）、文件（file）、native 资源（nativeAsset）、flutter 资源（asset），使用方需要自定义对应的加载器。
 
+#### OC
+
 ```objectivec
     [[PowerImageLoader sharedInstance] registerImageLoader:[PowerImageNetworkImageLoader new] forType:kPowerImageImageTypeNetwork];
     [[PowerImageLoader sharedInstance] registerImageLoader:[PowerImageAssetsImageLoader new] forType:kPowerImageImageTypeNativeAsset];
@@ -96,6 +98,7 @@ PowerImage 提供了基础的图片类型，包括网络图（network）、文�
     [[PowerImageLoader sharedInstance] registerImageLoader:[PowerImageFileImageLoader new] forType:kPowerImageImageTypeFile];
 ```
 
+#### Swift
 
 ```swift
         PowerImageLoader.sharedInstance().register(PowerImageNetworkImageLoader.init(), forType: kPowerImageImageTypeNetwork)
@@ -120,6 +123,8 @@ typedef void(^PowerImageLoaderCompletionBlock)(BOOL success, PowerImageResult *i
 
 Network image loader example:
 
+#### OC
+
 ```objectivec
 - (void)handleRequest:(PowerImageRequestConfig *)requestConfig completed:(PowerImageLoaderCompletionBlock)completedBlock {
     
@@ -142,7 +147,7 @@ Network image loader example:
 
 }
 ```
-
+#### Swift
 
 ```swift
 
@@ -177,6 +182,8 @@ func handleRequest(_ requestConfig: PowerImageRequestConfig!, completed complete
 
 native asset loader example:
 
+#### OC
+
 ```objectivec
 - (void)handleRequest:(PowerImageRequestConfig *)requestConfig completed:(PowerImageLoaderCompletionBlock)completedBlock {
     UIImage *image = [UIImage imageNamed:requestConfig.srcString];
@@ -187,7 +194,7 @@ native asset loader example:
     }
 }
 ```
-
+#### Swift
 
 ```swift
 
@@ -205,7 +212,7 @@ func handleRequest(_ requestConfig: PowerImageRequestConfig!, completed complete
 ```
 
 flutter asset loader example:
-
+#### OC
 ```objectivec
 - (void)handleRequest:(PowerImageRequestConfig *)requestConfig completed:(PowerImageLoaderCompletionBlock)completedBlock {
     UIImage *image = [self flutterImageWithName:requestConfig];
@@ -248,6 +255,7 @@ flutter asset loader example:
 }
 
 ```
+#### Swift
 
 ```swift
 
@@ -295,6 +303,8 @@ func handleRequest(_ requestConfig: PowerImageRequestConfig!, completed complete
 
 file loader example:
 
+#### OC
+
 ```objectivec
 - (void)handleRequest:(PowerImageRequestConfig *)requestConfig completed:(PowerImageLoaderCompletionBlock)completedBlock {
     
@@ -307,6 +317,8 @@ file loader example:
     }
 }
 ```
+
+#### Swift
 
 ```swift
 
