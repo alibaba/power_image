@@ -76,6 +76,7 @@ class PowerTextureState extends State<PowerTextureImage> {
       child: SizedBox(
         child: FittedBox(
           fit: widget.fit ?? BoxFit.contain,
+          alignment: widget.alignment,
           child: SizedBox(
             width: textureImageInfo.width?.toDouble() ?? widget.width,
             height: textureImageInfo.height?.toDouble() ?? widget.height,
