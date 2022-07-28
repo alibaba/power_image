@@ -61,6 +61,10 @@ public class PowerImageExternalRequest extends PowerImageBaseRequest {
             }
             bitmap = ((BitmapDrawable) imageDrawable).getBitmap();
         }
+        if (bitmap == null) {
+            onLoadFailed(TAG + ":onLoadResult bitmap is null or bitmap has recycled");
+            return;
+        }
         // convert to ARGB_8888 for flutter decoding
         if (bitmap.getConfig() != Bitmap.Config.ARGB_8888) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && bitmap.getConfig() == Bitmap.Config.HARDWARE) {
