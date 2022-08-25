@@ -44,7 +44,7 @@
 /// get src url from src which from flutter options.src
 - (NSString *)srcString;
 
-/// PowerImage.assert(src:"xxx", package:"xxx")
+/// PowerImage.asset(src:"xxx", package:"xxx")
 /// static NSString * const kPowerImageImageTypeAsset = @"asset";
 - (NSString *)srcPackage;
 

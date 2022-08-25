@@ -9,41 +9,49 @@ void main() {
     setUp(() {});
 
     test('constructors', () {
-      PowerImageRequestOptions optionsNetwork = PowerImageRequestOptions.network(
-          'network',
-          renderingType: renderingTypeExternal,
-          imageWidth: 100,
-          imageHeight: 101);
-      expect(optionsNetwork.src == PowerImageRequestOptionsSrcNormal(src: 'network'),
+      PowerImageRequestOptions optionsNetwork =
+          PowerImageRequestOptions.network('network',
+              renderingType: renderingTypeExternal,
+              imageWidth: 100,
+              imageHeight: 101);
+      expect(
+          optionsNetwork.src ==
+              PowerImageRequestOptionsSrcNormal(src: 'network'),
           true);
       expect(optionsNetwork.imageWidth == 100, true);
       expect(optionsNetwork.imageHeight == 101, true);
       expect(optionsNetwork.renderingType == renderingTypeExternal, true);
       expect(optionsNetwork.imageType == imageTypeNetwork, true);
 
-      PowerImageRequestOptions optionsNativeAsset = PowerImageRequestOptions.nativeAsset(
-          'nativeAsset',
-          renderingType: renderingTypeTexture,
-          imageWidth: 100,
-          imageHeight: 101);
-      expect(optionsNativeAsset.src == PowerImageRequestOptionsSrcNormal(src: 'nativeAsset'),
+      PowerImageRequestOptions optionsNativeAsset =
+          PowerImageRequestOptions.nativeAsset('nativeAsset',
+              renderingType: renderingTypeTexture,
+              imageWidth: 100,
+              imageHeight: 101);
+      expect(
+          optionsNativeAsset.src ==
+              PowerImageRequestOptionsSrcNormal(src: 'nativeAsset'),
           true);
       expect(optionsNativeAsset.imageWidth == 100, true);
       expect(optionsNativeAsset.imageHeight == 101, true);
       expect(optionsNativeAsset.renderingType == renderingTypeTexture, true);
-      expect(optionsNativeAsset.imageType == imageTypeNativeAssert, true);
+      expect(optionsNativeAsset.imageType == imageTypeNativeAsset, true);
 
       PowerImageRequestOptions optionsAsset = PowerImageRequestOptions.asset(
-          'asset', package: 'package',
+          'asset',
+          package: 'package',
           renderingType: renderingTypeTexture,
           imageWidth: 100,
           imageHeight: 101);
-      expect(optionsAsset.src == PowerImageRequestOptionsSrcAsset(src: 'asset', package: 'package'),
+      expect(
+          optionsAsset.src ==
+              PowerImageRequestOptionsSrcAsset(
+                  src: 'asset', package: 'package'),
           true);
       expect(optionsAsset.imageWidth == 100, true);
       expect(optionsAsset.imageHeight == 101, true);
       expect(optionsAsset.renderingType == renderingTypeTexture, true);
-      expect(optionsAsset.imageType == imageTypeAssert, true);
+      expect(optionsAsset.imageType == imageTypeAsset, true);
 
       PowerImageRequestOptions optionsFile = PowerImageRequestOptions.file(
           'file',
@@ -90,6 +98,44 @@ void main() {
       expect(testMap.length == 2, true);
       expect(testMap[options_3] == 'options_3', true);
       expect(testMap[options_2] == 'options_2', true);
+    });
+
+    test('invalid', () {
+      expect(() {
+        PowerImageRequestOptions(
+            src: PowerImageRequestOptionsSrcNormal(src: "srcValue"),
+            imageType: 'imageType',
+            imageWidth: double.infinity,
+            imageHeight: 101.0,
+            renderingType: 'renderingType');
+      }, throwsAssertionError);
+
+      expect(() {
+        PowerImageRequestOptions(
+            src: PowerImageRequestOptionsSrcNormal(src: "srcValue"),
+            imageType: 'imageType',
+            imageWidth: 101.0,
+            imageHeight: double.infinity,
+            renderingType: 'renderingType');
+      }, throwsAssertionError);
+
+      expect(() {
+        PowerImageRequestOptions(
+            src: PowerImageRequestOptionsSrcNormal(src: "srcValue"),
+            imageType: 'imageType',
+            imageWidth: 101.0,
+            imageHeight: -1,
+            renderingType: 'renderingType');
+      }, throwsAssertionError);
+
+      expect(() {
+        PowerImageRequestOptions(
+            src: PowerImageRequestOptionsSrcNormal(src: "srcValue"),
+            imageType: 'imageType',
+            imageWidth: 101.0,
+            imageHeight: double.nan,
+            renderingType: 'renderingType');
+      }, throwsAssertionError);
     });
   });
 }

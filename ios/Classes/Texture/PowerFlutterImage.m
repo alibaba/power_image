@@ -6,6 +6,7 @@
 //
 
 #import "PowerFlutterImage.h"
+#import "PowerImageDispatcher.h"
 
 @implementation PowerFlutterImage
 
@@ -29,7 +30,9 @@
 }
 - (void)draw:(PowerImageTexture *)texture textureRegistry:(id<FlutterTextureRegistry>)registry size:(CGSize)size {
     [texture updatePixelBufferWithImage:self.image andSize:size];
-    [registry textureFrameAvailable:[texture.textureId longLongValue]];
+    [[PowerImageDispatcher sharedInstance] runOnMainThread:^{
+        [registry textureFrameAvailable:[texture.textureId longLongValue]];
+    }];
 }
 
 - (void)destory {

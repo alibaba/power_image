@@ -5,7 +5,7 @@
 
 #import "PowerImageNetworkImageLoader.h"
 #import "PowerImageAssetsImageLoader.h"
-#import "PowerImageFlutterAssertImageLoader.h"
+#import "PowerImageFlutterAssetImageLoader.h"
 #import "PowerImageFileImageLoader.h"
 #import <SDWebImage/SDWebImage.h>
 @implementation AppDelegate
@@ -15,7 +15,7 @@
     [GeneratedPluginRegistrant registerWithRegistry:self];
     [[PowerImageLoader sharedInstance] registerImageLoader:[PowerImageNetworkImageLoader new] forType:kPowerImageImageTypeNetwork];
     [[PowerImageLoader sharedInstance] registerImageLoader:[PowerImageAssetsImageLoader new] forType:kPowerImageImageTypeNativeAsset];
-    [[PowerImageLoader sharedInstance] registerImageLoader:[PowerImageFlutterAssertImageLoader new] forType:kPowerImageImageTypeAsset];
+    [[PowerImageLoader sharedInstance] registerImageLoader:[PowerImageFlutterAssetImageLoader new] forType:kPowerImageImageTypeAsset];
     [[PowerImageLoader sharedInstance] registerImageLoader:[PowerImageFileImageLoader new] forType:kPowerImageImageTypeFile];
     [SDImageCacheConfig defaultCacheConfig].maxMemoryCount = 20;
     return [super application:application didFinishLaunchingWithOptions:launchOptions];

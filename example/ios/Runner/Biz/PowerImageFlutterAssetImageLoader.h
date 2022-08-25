@@ -1,5 +1,5 @@
 //
-//  MyFlutterAssertImageLoader.h
+//  MyFlutterAssetImageLoader.h
 //  Runner
 //
 //  Created by 王振辉 on 2021/8/6.
@@ -9,6 +9,6 @@
 #import "PowerImageLoaderProtocol.h"
 
 
-@interface PowerImageFlutterAssertImageLoader : NSObject<PowerImageLoaderProtocol>
+@interface PowerImageFlutterAssetImageLoader : NSObject<PowerImageLoaderProtocol>
 
 @end

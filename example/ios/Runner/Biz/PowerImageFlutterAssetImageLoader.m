@@ -1,14 +1,14 @@
 //
-//  MyFlutterAssertImageLoader.m
+//  MyFlutterAssetImageLoader.m
 //  Runner
 //
 //  Created by 王振辉 on 2021/8/6.
 //
 
-#import "PowerImageFlutterAssertImageLoader.h"
+#import "PowerImageFlutterAssetImageLoader.h"
 #import <Flutter/Flutter.h>
 
-@implementation PowerImageFlutterAssertImageLoader
+@implementation PowerImageFlutterAssetImageLoader
 - (void)handleRequest:(PowerImageRequestConfig *)requestConfig completed:(PowerImageLoaderCompletionBlock)completedBlock {
     UIImage *image = [self flutterImageWithName:requestConfig];
     if (image) {

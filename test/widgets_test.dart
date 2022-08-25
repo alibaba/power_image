@@ -229,7 +229,7 @@ void main() {
         expect(nativeAssetImage.image.runtimeType == PowerTextureImageProvider,
             true);
         expect(
-            nativeAssetImage.image.options.imageType == imageTypeNativeAssert,
+            nativeAssetImage.image.options.imageType == imageTypeNativeAsset,
             true);
         expect(nativeAssetImage.image.options.imageWidth == 11.0, true);
         expect(nativeAssetImage.image.options.imageHeight == 22.0, true);
@@ -253,7 +253,7 @@ void main() {
         PowerImage assetImage = PowerImage.asset('asset_test_src',
             package: 'asset_package', imageWidth: 11, imageHeight: 22);
         expect(assetImage.image.runtimeType == PowerTextureImageProvider, true);
-        expect(assetImage.image.options.imageType == imageTypeAssert, true);
+        expect(assetImage.image.options.imageType == imageTypeAsset, true);
         expect(assetImage.image.options.imageWidth == 11.0, true);
         expect(assetImage.image.options.imageHeight == 22.0, true);
         expect(assetImage.image.options.renderingType == renderingTypeTexture,

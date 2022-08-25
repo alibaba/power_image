@@ -61,7 +61,7 @@ class _ExamplePageState extends State<ExamplePage> {
       ) {
         return Text(error.toString());
       });
-    } else if (options.imageType == imageTypeNativeAssert) {
+    } else if (options.imageType == imageTypeNativeAsset) {
       image = PowerImage.nativeAsset(
         options.src!,
         fit: BoxFit.contain,
@@ -71,7 +71,7 @@ class _ExamplePageState extends State<ExamplePage> {
         imageHeight: options.imageHeight,
         renderingType: options.renderingType,
       );
-    } else if (options.imageType == imageTypeAssert) {
+    } else if (options.imageType == imageTypeAsset) {
       image = PowerImage.asset(
         options.src!,
         fit: BoxFit.contain,
