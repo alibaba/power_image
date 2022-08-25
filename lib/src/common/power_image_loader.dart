@@ -96,7 +96,7 @@ class PowerImageLoader {
         PowerImageRequestOptions(
             src: PowerImageRequestOptionsSrcNormal(src: src),
             renderingType: renderingType,
-            imageType: imageTypeNativeAssert,
+            imageType: imageTypeNativeAsset,
             imageWidth: imageWidth,
             imageHeight: imageHeight),
         context,
@@ -117,7 +117,7 @@ class PowerImageLoader {
         PowerImageRequestOptions(
             src: PowerImageRequestOptionsSrcAsset(src: src, package: package),
             renderingType: renderingType,
-            imageType: imageTypeAssert,
+            imageType: imageTypeAsset,
             imageWidth: imageWidth,
             imageHeight: imageHeight),
         context,

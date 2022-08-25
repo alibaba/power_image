@@ -56,13 +56,13 @@ class ExampleTool {
     return [
       ExampleSrc(
           src: 'assets/images/flutter_asset_lena_png.png',
-          imageType: imageTypeAssert,
+          imageType: imageTypeAsset,
           renderingType: renderingType,
           imageWidth: 100,
           imageHeight: 100),
       ExampleSrc(
           src: 'assets/images/flutter_asset_lena_jpg.jpg',
-          imageType: imageTypeAssert,
+          imageType: imageTypeAsset,
           renderingType: renderingType,
           imageWidth: 100,
           imageHeight: 100)
@@ -124,7 +124,7 @@ class ExampleTool {
     // ),
     ExampleSrc(
       src: 'lena_jpg',
-      imageType: imageTypeNativeAssert,
+      imageType: imageTypeNativeAsset,
     ),
     // ExampleSrc(
     //     src:

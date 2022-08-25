@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:power_image/src/common/power_image_provider.dart';
 import 'package:power_image/src/external/power_external_image.dart';
+import 'package:power_image/src/tools/power_num_safe.dart';
 import 'package:power_image_ext/image_ext.dart';
 
 import 'options/power_image_request_options.dart';
@@ -34,8 +35,8 @@ class PowerImage extends StatefulWidget {
             src: PowerImageRequestOptionsSrcNormal(src: src),
             renderingType: renderingType,
             imageType: imageTypeNetwork,
-            imageWidth: imageWidth ?? width,
-            imageHeight: imageHeight ?? height)),
+            imageWidth: imageWidth ?? makeNumValid(width, null),
+            imageHeight: imageHeight ?? makeNumValid(height, null))),
         imageBuilder = null,
         super(key: key);
 
@@ -62,9 +63,9 @@ class PowerImage extends StatefulWidget {
   })  : image = PowerImageProvider.options(PowerImageRequestOptions(
             src: PowerImageRequestOptionsSrcNormal(src: src),
             renderingType: renderingType,
-            imageType: imageTypeNativeAssert,
-            imageWidth: imageWidth ?? width,
-            imageHeight: imageHeight ?? height)),
+            imageType: imageTypeNativeAsset,
+            imageWidth: imageWidth ?? makeNumValid(width, null),
+            imageHeight: imageHeight ?? makeNumValid(height, null))),
         imageBuilder = null,
         super(key: key);
 
@@ -92,9 +93,9 @@ class PowerImage extends StatefulWidget {
   })  : image = PowerImageProvider.options(PowerImageRequestOptions(
             src: PowerImageRequestOptionsSrcAsset(src: src, package: package),
             renderingType: renderingType,
-            imageType: imageTypeAssert,
-            imageWidth: imageWidth ?? width,
-            imageHeight: imageHeight ?? height)),
+            imageType: imageTypeAsset,
+            imageWidth: imageWidth ?? makeNumValid(width, null),
+            imageHeight: imageHeight ?? makeNumValid(height, null))),
         imageBuilder = null,
         super(key: key);
 
@@ -122,8 +123,8 @@ class PowerImage extends StatefulWidget {
             src: PowerImageRequestOptionsSrcNormal(src: src),
             renderingType: renderingType,
             imageType: imageTypeFile,
-            imageWidth: imageWidth ?? width,
-            imageHeight: imageHeight ?? height)),
+            imageWidth: imageWidth ?? makeNumValid(width, null),
+            imageHeight: imageHeight ?? makeNumValid(height, null))),
         imageBuilder = null,
         super(key: key);
 
@@ -151,8 +152,8 @@ class PowerImage extends StatefulWidget {
             src: src,
             renderingType: renderingType,
             imageType: imageType,
-            imageWidth: imageWidth ?? width,
-            imageHeight: imageHeight ?? height)),
+            imageWidth: imageWidth ?? makeNumValid(width, null),
+            imageHeight: imageHeight ?? makeNumValid(height, null))),
         imageBuilder = null,
         super(key: key);
 
@@ -240,7 +241,6 @@ class PowerImage extends StatefulWidget {
 class PowerImageState extends State<PowerImage> {
   @override
   Widget build(BuildContext context) {
-
     ImageErrorWidgetBuilder? errorWidgetBuilder = widget.errorBuilder;
     errorWidgetBuilder ??= (
       BuildContext context,

@@ -118,7 +118,7 @@ class PowerImageLoadException implements Exception {
   /// and request [uniqueKey].
   PowerImageLoadException({required this.nativeResult})
       : assert(nativeResult != null),
-        _message = 'Power Image request failed';
+        _message = 'Power Image request failed. For details, see the variable nativeResult';
 
   /// 0 = {map entry} "success" -> false
   /// 1 = {map entry} "uniqueKey" -> "{src: http://img.alicdn.com//bao//uploaded//i2//O1CN01SNnaus2KLND4UQngH_!!0-fleamarket.jpg}_imageTyp..."
