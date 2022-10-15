@@ -26,7 +26,7 @@ public class PowerImagePlugin implements FlutterPlugin, MethodCallHandler {
     /// when the Flutter Engine is detached from the Activity
     private MethodChannel methodChannel;
     private EventChannel eventChannel;
-    private static Context sContext; 
+    private static Context sContext;
     
     public static Context getContext(){
         return sContext;
@@ -36,11 +36,14 @@ public class PowerImagePlugin implements FlutterPlugin, MethodCallHandler {
         System.loadLibrary("powerimage");
     }
 
+    private String engineId;
+
     @Override
     public void onAttachedToEngine(FlutterPluginBinding flutterPluginBinding) {
         if(sContext == null){
             sContext = flutterPluginBinding.getApplicationContext();
         }
+        engineId = String.valueOf(flutterPluginBinding.getFlutterEngine().hashCode());
         methodChannel = new MethodChannel(
                 flutterPluginBinding.getBinaryMessenger(), "power_image/method");
         methodChannel.setMethodCallHandler(this);
@@ -48,7 +51,7 @@ public class PowerImagePlugin implements FlutterPlugin, MethodCallHandler {
                 flutterPluginBinding.getBinaryMessenger(), "power_image/event");
         eventChannel.setStreamHandler(PowerImageEventSink.getInstance());
         PowerImageRequestManager.getInstance()
-                .configWithTextureRegistry(flutterPluginBinding.getTextureRegistry());
+                .configWithTextureRegistry(engineId, flutterPluginBinding.getTextureRegistry());
         PowerImageDispatcher.getInstance().prepare();
     }
 
@@ -64,7 +67,7 @@ public class PowerImagePlugin implements FlutterPlugin, MethodCallHandler {
             if (call.arguments instanceof List) {
                 List arguments = (List) call.arguments;
                 List results = PowerImageRequestManager.getInstance()
-                        .configRequestsWithArguments(arguments);
+                        .configRequestsWithArguments(engineId, arguments);
                 result.success(results);
                 PowerImageRequestManager.getInstance().startLoadingWithArguments(arguments);
             } else {

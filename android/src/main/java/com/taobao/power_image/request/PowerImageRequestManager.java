@@ -17,7 +17,7 @@ import io.flutter.view.TextureRegistry;
 public class PowerImageRequestManager {
 
     private Map<String, PowerImageBaseRequest> requests;
-    private WeakReference<TextureRegistry> textureRegistryWrf;
+    private HashMap<String, WeakReference<TextureRegistry>> textureRegistryWrfMap = new HashMap<>();
 
     private PowerImageRequestManager() {
         requests = new HashMap<>();
@@ -31,11 +31,12 @@ public class PowerImageRequestManager {
         return Holder.instance;
     }
 
-    public void configWithTextureRegistry(TextureRegistry textureRegistry) {
-        textureRegistryWrf = new WeakReference<>(textureRegistry);
+    public void configWithTextureRegistry(String key, TextureRegistry textureRegistry) {
+        WeakReference<TextureRegistry> textureRegistryWrf = new WeakReference<>(textureRegistry);
+        textureRegistryWrfMap.put(key, textureRegistryWrf);
     }
 
-    public List<Map<String, Object>> configRequestsWithArguments(List<Map<String, Object>> list) {
+    public List<Map<String, Object>> configRequestsWithArguments(String key, List<Map<String, Object>> list) {
         List<Map<String, Object>> results = new ArrayList<>();
         if (list == null || list.isEmpty()) {
             return results;
@@ -47,7 +48,11 @@ public class PowerImageRequestManager {
             if (RENDER_TYPE_EXTERNAL.equals(renderType)) {
                 request = new PowerImageExternalRequest(arguments);
             } else if (RENDER_TYPE_TEXTURE.equals(renderType)) {
-                request = new PowerImageTextureRequest(arguments, textureRegistryWrf.get());
+                final WeakReference<TextureRegistry> textureRegistryWeakReference = textureRegistryWrfMap.get(key);
+                if (textureRegistryWeakReference == null) {
+                    return results;
+                }
+                request = new PowerImageTextureRequest(arguments, textureRegistryWeakReference.get());
             } else {
                 continue;
             }
