@@ -3,9 +3,9 @@ package com.taobao.power_image.request;
 import android.graphics.Rect;
 import android.view.Surface;
 
+import com.taobao.power_image.PowerImageEngineContext;
 import com.taobao.power_image.dispatcher.PowerImageDispatcher;
 import com.taobao.power_image.loader.FlutterImage;
-import com.taobao.power_image.loader.FlutterSingleFrameImage;
 import com.taobao.power_image.loader.PowerImageResult;
 
 import java.lang.ref.WeakReference;
@@ -31,8 +31,8 @@ public class PowerImageTextureRequest extends PowerImageBaseRequest {
     private int bitmapWidth;
     private int bitmapHeight;
 
-    public PowerImageTextureRequest(Map<String, Object> arguments, TextureRegistry textureRegistry) {
-        super(arguments);
+    public PowerImageTextureRequest(PowerImageEngineContext context, Map<String, Object> arguments, TextureRegistry textureRegistry) {
+        super(context, arguments);
         textureRegistryWrf = new WeakReference<>(textureRegistry);
         stopped = false;
     }

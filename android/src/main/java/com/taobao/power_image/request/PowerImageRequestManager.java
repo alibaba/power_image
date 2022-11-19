@@ -3,6 +3,8 @@ package com.taobao.power_image.request;
 import static com.taobao.power_image.request.PowerImageBaseRequest.RENDER_TYPE_EXTERNAL;
 import static com.taobao.power_image.request.PowerImageBaseRequest.RENDER_TYPE_TEXTURE;
 
+import com.taobao.power_image.PowerImageEngineContext;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,27 +18,21 @@ import io.flutter.view.TextureRegistry;
  */
 public class PowerImageRequestManager {
 
-    private Map<String, PowerImageBaseRequest> requests;
-    private HashMap<String, WeakReference<TextureRegistry>> textureRegistryWrfMap = new HashMap<>();
+    private final PowerImageEngineContext engineContext;
 
-    private PowerImageRequestManager() {
+    private Map<String, PowerImageBaseRequest> requests;
+    private WeakReference<TextureRegistry> textureRegistryWrf;
+
+    public PowerImageRequestManager(PowerImageEngineContext context) {
+        engineContext = context;
         requests = new HashMap<>();
     }
 
-    private static class Holder {
-        private final static PowerImageRequestManager instance = new PowerImageRequestManager();
+    public void configWithTextureRegistry(TextureRegistry textureRegistry) {
+        this.textureRegistryWrf = new WeakReference<>(textureRegistry);
     }
 
-    public static PowerImageRequestManager getInstance() {
-        return Holder.instance;
-    }
-
-    public void configWithTextureRegistry(String key, TextureRegistry textureRegistry) {
-        WeakReference<TextureRegistry> textureRegistryWrf = new WeakReference<>(textureRegistry);
-        textureRegistryWrfMap.put(key, textureRegistryWrf);
-    }
-
-    public List<Map<String, Object>> configRequestsWithArguments(String key, List<Map<String, Object>> list) {
+    public List<Map<String, Object>> configRequestsWithArguments(List<Map<String, Object>> list) {
         List<Map<String, Object>> results = new ArrayList<>();
         if (list == null || list.isEmpty()) {
             return results;
@@ -46,13 +42,9 @@ public class PowerImageRequestManager {
             String renderType = (String) arguments.get("renderingType");
             PowerImageBaseRequest request;
             if (RENDER_TYPE_EXTERNAL.equals(renderType)) {
-                request = new PowerImageExternalRequest(arguments);
+                request = new PowerImageExternalRequest(engineContext, arguments);
             } else if (RENDER_TYPE_TEXTURE.equals(renderType)) {
-                final WeakReference<TextureRegistry> textureRegistryWeakReference = textureRegistryWrfMap.get(key);
-                if (textureRegistryWeakReference == null) {
-                    return results;
-                }
-                request = new PowerImageTextureRequest(arguments, textureRegistryWeakReference.get());
+                request = new PowerImageTextureRequest(engineContext, arguments, textureRegistryWrf.get());
             } else {
                 continue;
             }
