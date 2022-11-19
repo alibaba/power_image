@@ -7,12 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.taobao.power_image.dispatcher.PowerImageDispatcher;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.plugin.common.EventChannel;
-import io.flutter.plugin.common.MethodChannel;
 
 /**
  * PowerImagePlugin
@@ -20,7 +15,6 @@ import io.flutter.plugin.common.MethodChannel;
 public class PowerImagePlugin implements FlutterPlugin {
 
     private static Context sContext;
-    public static Map<String, PowerImageEngineContext> powerImageEngineContextMap = new HashMap<>();
 
     public static Context getContext() {
         return sContext;
@@ -30,29 +24,25 @@ public class PowerImagePlugin implements FlutterPlugin {
         System.loadLibrary("powerimage");
     }
 
-    private String engineId;
+    private PowerImageEngineContext engineContext;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         if (sContext == null) {
             sContext = flutterPluginBinding.getApplicationContext();
         }
-        PowerImageEngineContext engineContext = new PowerImageEngineContext(flutterPluginBinding);
-        engineId = String.valueOf(flutterPluginBinding.getFlutterEngine().hashCode());
-        powerImageEngineContextMap.put(engineId, engineContext);
+        if (engineContext == null) {
+            engineContext = new PowerImageEngineContext();
+        }
+        engineContext.onAttachedToEngine(flutterPluginBinding);
         PowerImageDispatcher.getInstance().prepare();
     }
 
     @Override
     public void onDetachedFromEngine(FlutterPluginBinding binding) {
-        PowerImageEngineContext engineContext = getEngineContext();
         if (engineContext != null) {
             engineContext.onDetached();
+            engineContext = null;
         }
-        powerImageEngineContextMap.remove(engineId);
-    }
-
-    public PowerImageEngineContext getEngineContext() {
-        return powerImageEngineContextMap.get(engineId);
     }
 }

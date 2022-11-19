@@ -28,10 +28,12 @@ public class PowerImageEngineContext implements MethodChannel.MethodCallHandler 
     private MethodChannel methodChannel;
     private EventChannel eventChannel;
 
-    public PowerImageEngineContext(FlutterPlugin.FlutterPluginBinding flutterPluginBinding) {
+    public PowerImageEngineContext() {
         powerImageRequestManager = new PowerImageRequestManager(this);
         powerImageEventSink = new PowerImageEventSink();
+    }
 
+    public void onAttachedToEngine(@NonNull FlutterPlugin.FlutterPluginBinding flutterPluginBinding) {
         methodChannel = new MethodChannel(
                 flutterPluginBinding.getBinaryMessenger(), "power_image/method");
         methodChannel.setMethodCallHandler(this);
@@ -58,8 +60,10 @@ public class PowerImageEngineContext implements MethodChannel.MethodCallHandler 
         return powerImageRequestManager.releaseRequestsWithArguments(arguments);
     }
 
-    public PowerImageEventSink getPowerImageEventSink() {
-        return powerImageEventSink;
+    public void sendImageStateEvent(Map<String, Object> event, boolean success) {
+        if (powerImageEventSink != null) {
+            powerImageEventSink.sendImageStateEvent(event, success);
+        }
     }
 
     @Override
@@ -87,8 +91,12 @@ public class PowerImageEngineContext implements MethodChannel.MethodCallHandler 
     }
 
     public void onDetached() {
-        methodChannel.setMethodCallHandler(null);
-        eventChannel.setStreamHandler(null);
+        if (methodChannel != null) {
+            methodChannel.setMethodCallHandler(null);
+        }
+        if (eventChannel != null) {
+            eventChannel.setStreamHandler(null);
+        }
     }
 
     public static class PowerImageEventSink implements EventChannel.StreamHandler {
@@ -114,5 +122,4 @@ public class PowerImageEngineContext implements MethodChannel.MethodCallHandler 
             eventSink.success(event);
         }
     }
-
 }

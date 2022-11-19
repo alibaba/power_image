@@ -77,8 +77,7 @@ public abstract class PowerImageBaseRequest {
             @Override
             public void run() {
                 PowerImageBaseRequest.this.imageTaskState = REQUEST_STATE_LOAD_SUCCEED;
-                engineContext.getPowerImageEventSink()
-                        .sendImageStateEvent(PowerImageBaseRequest.this.encode(), true);
+                engineContext.sendImageStateEvent(PowerImageBaseRequest.this.encode(), true);
             }
         });
     }
@@ -90,8 +89,7 @@ public abstract class PowerImageBaseRequest {
                 PowerImageBaseRequest.this.imageTaskState = REQUEST_STATE_LOAD_FAILED;
                 Map<String, Object> event = PowerImageBaseRequest.this.encode();
                 event.put("errMsg", errMsg != null ? errMsg : "failed!");
-                engineContext.getPowerImageEventSink()
-                        .sendImageStateEvent(event, false);
+                engineContext.sendImageStateEvent(event, false);
             }
         });
     }
