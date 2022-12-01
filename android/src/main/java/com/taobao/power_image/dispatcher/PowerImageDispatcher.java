@@ -14,6 +14,7 @@ public class PowerImageDispatcher {
 
     private static volatile PowerImageDispatcher sInstance;
 
+    private boolean isPrepared = false;
     private Handler workHandler;
     private Handler mainHandler;
     private Looper workLooper;
@@ -30,6 +31,10 @@ public class PowerImageDispatcher {
     }
 
     public void prepare() {
+        if (isPrepared) {
+            return;
+        }
+        isPrepared = true;
         mainHandler = new Handler(Looper.getMainLooper());
         Thread workThread = new Thread(new Runnable() {
             @Override

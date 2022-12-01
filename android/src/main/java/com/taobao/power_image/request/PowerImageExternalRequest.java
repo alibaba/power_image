@@ -5,6 +5,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 
+import com.taobao.power_image.PowerImageEngineContext;
 import com.taobao.power_image.loader.FlutterMultiFrameImage;
 import com.taobao.power_image.loader.PowerImageResult;
 
@@ -28,8 +29,8 @@ public class PowerImageExternalRequest extends PowerImageBaseRequest {
     private long handle;
     private int length;
 
-    public PowerImageExternalRequest(Map<String, Object> arguments) {
-        super(arguments);
+    public PowerImageExternalRequest(PowerImageEngineContext context, Map<String, Object> arguments) {
+        super(context, arguments);
     }
 
     @Override

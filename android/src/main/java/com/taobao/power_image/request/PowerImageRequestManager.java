@@ -3,6 +3,8 @@ package com.taobao.power_image.request;
 import static com.taobao.power_image.request.PowerImageBaseRequest.RENDER_TYPE_EXTERNAL;
 import static com.taobao.power_image.request.PowerImageBaseRequest.RENDER_TYPE_TEXTURE;
 
+import com.taobao.power_image.PowerImageEngineContext;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,23 +18,18 @@ import io.flutter.view.TextureRegistry;
  */
 public class PowerImageRequestManager {
 
+    private final PowerImageEngineContext engineContext;
+
     private Map<String, PowerImageBaseRequest> requests;
     private WeakReference<TextureRegistry> textureRegistryWrf;
 
-    private PowerImageRequestManager() {
+    public PowerImageRequestManager(PowerImageEngineContext context) {
+        engineContext = context;
         requests = new HashMap<>();
     }
 
-    private static class Holder {
-        private final static PowerImageRequestManager instance = new PowerImageRequestManager();
-    }
-
-    public static PowerImageRequestManager getInstance() {
-        return Holder.instance;
-    }
-
     public void configWithTextureRegistry(TextureRegistry textureRegistry) {
-        textureRegistryWrf = new WeakReference<>(textureRegistry);
+        this.textureRegistryWrf = new WeakReference<>(textureRegistry);
     }
 
     public List<Map<String, Object>> configRequestsWithArguments(List<Map<String, Object>> list) {
@@ -45,9 +42,9 @@ public class PowerImageRequestManager {
             String renderType = (String) arguments.get("renderingType");
             PowerImageBaseRequest request;
             if (RENDER_TYPE_EXTERNAL.equals(renderType)) {
-                request = new PowerImageExternalRequest(arguments);
+                request = new PowerImageExternalRequest(engineContext, arguments);
             } else if (RENDER_TYPE_TEXTURE.equals(renderType)) {
-                request = new PowerImageTextureRequest(arguments, textureRegistryWrf.get());
+                request = new PowerImageTextureRequest(engineContext, arguments, textureRegistryWrf.get());
             } else {
                 continue;
             }
