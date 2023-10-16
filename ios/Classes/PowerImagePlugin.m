@@ -1,9 +1,9 @@
 #import "PowerImagePlugin.h"
 #import "PowerImageRequestManager.h"
+#import "PowerImageEngineContext.h"
 
 @interface PowerImagePlugin ()
-@property (nonatomic, copy) FlutterEventSink eventSink;
-@property (nonatomic, strong) FlutterEventChannel *eventChannel;
+@property (nonatomic, strong) NSMutableArray<PowerImageEngineContext *> *engineContexts;
 @end
 
 @implementation PowerImagePlugin
@@ -18,51 +18,23 @@
 }
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-    FlutterMethodChannel* channel = [FlutterMethodChannel methodChannelWithName:@"power_image/method" binaryMessenger:[registrar messenger]];
-    PowerImagePlugin* instance = [PowerImagePlugin sharedInstance];
-    [registrar addMethodCallDelegate:instance channel:channel];
-    
-    instance.eventChannel = [FlutterEventChannel eventChannelWithName:@"power_image/event" binaryMessenger:[registrar messenger]];
-    [instance.eventChannel setStreamHandler:instance];
-    
-    [[PowerImageRequestManager sharedInstance] configWithTextureRegistry:registrar.textures];
+    if ([PowerImagePlugin sharedInstance].engineContexts == nil) {
+        [PowerImagePlugin sharedInstance].engineContexts = [[NSMutableArray alloc] init];
+    }
+    PowerImageEngineContext *engineContext = [[PowerImageEngineContext alloc] init];
+    [engineContext registerWithRegistrar:registrar];
+    [[PowerImagePlugin sharedInstance].engineContexts addObject:engineContext];
 }
 
-- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-    if ([@"startImageRequests" isEqualToString:call.method]) {
-        NSArray *arguments = call.arguments;
-        NSArray *results = [[PowerImageRequestManager sharedInstance] configRequestsWithArguments:arguments];
-        result(results);
-        [[PowerImageRequestManager sharedInstance] startLoadingWithArguments:arguments]; // 开始图片加载任务
-    } else if ([@"releaseImageRequests" isEqualToString:call.method]) {
-        NSArray *arguments = call.arguments;
-        NSArray *results = [[PowerImageRequestManager sharedInstance] releaseRequestsWithArguments:arguments];
-        result(results);
-    } else {
-        result(FlutterMethodNotImplemented);
+- (void)detachForRegistrar:(NSObject<FlutterTextureRegistry>*)registry {
+    for (int i = 0; i< self.engineContexts.count; i++) {
+        PowerImageEngineContext *engineContext = self.engineContexts[i];
+        if (engineContext.pluginRegistry == registry) {
+            [engineContext onDetached];
+            [self.engineContexts removeObject:engineContext];
+            break;
+        }
     }
 }
-
-- (FlutterError* _Nullable)onListenWithArguments:(id _Nullable)arguments
-                                       eventSink:(FlutterEventSink)eventSink {
-    self.eventSink = eventSink;
-    return nil;
-}
-
-- (FlutterError* _Nullable)onCancelWithArguments:(id _Nullable)arguments {
-    self.eventSink = nil;
-    return nil;
-}
-
-- (void)sendImageStateEvent:(NSMutableDictionary *)event success:(BOOL)success {
-    if (!self.eventSink || !event) {
-        return;
-    }
-    
-    event[@"eventName"] = @"onReceiveImageEvent";
-    event[@"success"] = @(success);
-    self.eventSink(event);
-}
-
 
 @end

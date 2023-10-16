@@ -11,29 +11,21 @@
 #import "PowerImageTextureRequest.h"
 #import "PowerImageExternalRequest.h"
 
+
 @interface PowerImageRequestManager ()
 
 @property (nonatomic, strong) NSMutableDictionary <NSString *, PowerImageBaseRequest *> * requests;
 @property (nonatomic, weak) id<FlutterTextureRegistry> textureRegistry;
+@property (nonatomic, strong) PowerImageEngineContext *engineContext;
 
 @end
 
 @implementation PowerImageRequestManager
 
-
-+ (instancetype)sharedInstance {
-    static PowerImageRequestManager *instance;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        instance = [[PowerImageRequestManager alloc] init];
-    });
-    return instance;
-}
-
-- (instancetype)init
-{
+- (instancetype)initWithEngineContext:(PowerImageEngineContext *)context {
     self = [super init];
     if (self) {
+        self.engineContext = context;
         _requests = [[NSMutableDictionary alloc] init];
     }
     return self;
@@ -54,9 +46,9 @@
         NSString *renderType = [self _renderingType:arguments];
         PowerImageBaseRequest *request;
         if ([renderType isEqualToString:PowerImageRequestRenderTypeExternal]) {
-            request = [[PowerImageExternalRequest alloc] initWithArguments:arguments];
+            request = [[PowerImageExternalRequest alloc] initWithEngineContext:self.engineContext arguments:arguments];
         }else if ([renderType isEqualToString:PowerImageRequestRenderTypeTexture]) {
-            request = [[PowerImageTextureRequest alloc] initWithArguments:arguments textureRegistry:self.textureRegistry];
+            request = [[PowerImageTextureRequest alloc] initWithEngineContext:self.engineContext arguments:arguments textureRegistry: self.textureRegistry];
         }else {
             continue;
         }

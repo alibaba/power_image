@@ -7,10 +7,12 @@
 
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
+#import "PowerImageEngineContext.h"
 
 
 @interface PowerImageRequestManager : NSObject
-+ (instancetype)sharedInstance;
+
+- (instancetype)initWithEngineContext:(PowerImageEngineContext *)context;
 
 - (void)configWithTextureRegistry:(id<FlutterTextureRegistry>)textureRegistry;
 
