@@ -11,8 +11,7 @@
 
 
 @interface PowerImageTextureRequest : PowerImageBaseRequest
-- (instancetype)initWithArguments:(NSDictionary *)arguments textureRegistry:(id<FlutterTextureRegistry>)textureRegistry;
-
+- (instancetype)initWithEngineContext:(PowerImageEngineContext *)context arguments:(NSDictionary *)arguments textureRegistry:(id<FlutterTextureRegistry>)textureRegistry;
 
 @end
 

@@ -9,18 +9,22 @@
 #import "PowerImageDispatcher.h"
 #import "PowerImagePlugin.h"
 #import "PowerFlutterMultiFrameImage.h"
+#import "PowerImageRequestManager.h"
+
 
 @interface PowerImageBaseRequest()
 
 @property (nonatomic, strong) PowerImageResult *result;
+@property (nonatomic, strong) PowerImageEngineContext *engineContext;
 
 @end
 
 @implementation PowerImageBaseRequest
 
-- (instancetype)initWithArguments:(NSDictionary *)arguments {
+- (instancetype)initWithEngineContext:(PowerImageEngineContext *)context arguments:(NSDictionary *)arguments {
     self = [super init];
     if (self) {
+        self.engineContext = context;
         _uniqueKey = arguments[@"uniqueKey"];
         _imageRequestConfig = [PowerImageRequestConfig requestConfigWithArguments:arguments];
     }
@@ -70,7 +74,7 @@
     [[PowerImageDispatcher sharedInstance] runOnMainThread:^{
        __strong typeof(self) self = weakSelf;
        self.imageTaskState = PowerImageRequestStateLoadSucceed;
-       [[PowerImagePlugin sharedInstance] sendImageStateEvent:[self encode] success:YES];
+        [self.engineContext sendImageStateEvent:[self encode] success:YES];
     }];
 }
 
@@ -81,7 +85,7 @@
         self.imageTaskState = PowerImageRequestStateLoadFailed;
         NSMutableDictionary *event = [self encode];
         event[@"errMsg"] = errMsg;
-        [[PowerImagePlugin sharedInstance] sendImageStateEvent:event success:NO];
+        [self.engineContext sendImageStateEvent:event success:NO];
     }];
 }
 

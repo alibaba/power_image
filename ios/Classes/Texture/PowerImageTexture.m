@@ -56,11 +56,11 @@
     CGSize imageSize = [self _calculateTextureSizeWithRequestSize:size image:image];
     
     CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault,
-                                          imageSize.width,
-                                          imageSize.height,
-                                          kCVPixelFormatType_32BGRA,
-                                          (__bridge CFDictionaryRef) options,
-                                          &pxbuffer);
+     imageSize.width,
+     imageSize.height,
+     kCVPixelFormatType_32BGRA,
+     (__bridge CFDictionaryRef) options,
+     &pxbuffer);
     
     NSParameterAssert(status == kCVReturnSuccess && pxbuffer != NULL);
     
@@ -73,14 +73,14 @@
     
     CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef context = CGBitmapContextCreate(pxdata, imageSize.width,
-                                                 imageSize.height, 8, CVPixelBufferGetBytesPerRow(pxbuffer), rgbColorSpace,
-                                                 kCGBitmapByteOrder32Host | kCGImageAlphaPremultipliedFirst);
+            imageSize.height, 8, CVPixelBufferGetBytesPerRow(pxbuffer), rgbColorSpace,
+            kCGBitmapByteOrder32Host | kCGImageAlphaPremultipliedFirst);
     
     
     NSParameterAssert(context);
     
     CGContextDrawImage(context, CGRectMake(0, 0, imageSize.width,
-                                           imageSize.height), image);
+      imageSize.height), image);
     CGColorSpaceRelease(rgbColorSpace);
     CGContextRelease(context);
     
