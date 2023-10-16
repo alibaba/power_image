@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "PowerImageRequestConfig.h"
 #import "PowerImageLoader.h"
+#import "PowerImageEngineContext.h"
 
 static NSString * const PowerImageRequestStateInitializeSucceed = @"initializeSucceed";
 static NSString * const PowerImageRequestStateInitializeFailed = @"initializeFailed";
@@ -25,7 +26,7 @@ static NSString * const PowerImageRequestRenderTypeTexture = @"texture";
 @property (nonatomic, copy) NSString *imageTaskState;
 
 
-- (instancetype)initWithArguments:(NSDictionary *)arguments;
+- (instancetype)initWithEngineContext:(PowerImageEngineContext *)context arguments:(NSDictionary *)arguments;
 
 - (BOOL)configTask;
 

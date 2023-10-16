@@ -1,6 +1,6 @@
 #import <Flutter/Flutter.h>
 
-@interface PowerImagePlugin : NSObject<FlutterPlugin, FlutterStreamHandler>
+@interface PowerImagePlugin : NSObject<FlutterPlugin>
 + (instancetype)sharedInstance;
-- (void)sendImageStateEvent:(NSMutableDictionary *)event success:(BOOL)success;
+- (void)detachForRegistrar:(NSObject<FlutterTextureRegistry>*)registry;
 @end

@@ -25,8 +25,8 @@
 
 @implementation PowerImageTextureRequest
 
-- (instancetype)initWithArguments:(NSDictionary *)arguments textureRegistry:(id<FlutterTextureRegistry>)textureRegistry {
-    self = [super initWithArguments:arguments];
+- (instancetype)initWithEngineContext:(PowerImageEngineContext *)context arguments:(NSDictionary *)arguments textureRegistry:(id<FlutterTextureRegistry>)textureRegistry {
+    self = [super initWithEngineContext:context arguments:arguments];
     if (self) {
         _textureRegistry = textureRegistry;
         _isStopped = NO;
